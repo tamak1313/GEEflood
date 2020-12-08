@@ -1,0 +1,30 @@
+--- 
+title: "GEE学習サイト"
+author: "Tamaki.M"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+description: "GEEを活用して洪水被害図を作成してみましょう"
+---
+
+# 初めに {-}
+
+このサイトでは、Google earth engineを活用して洪水被害図を作成する方法について詳細に紹介しています。UN Spiderが提供しているコードにのっとって説明をしています。元のサイトを確認したい方は、以下のURLから飛ぶことができます。
+(https://un-spider.org/advisory-support/recommended-practices/recommended-practice-google-earth-engine-flood-mapping/step-by-step)
+
+コードを詳しく知る前に、まずはどのようなものが出来上がるのか確認したいという方は、以下のサイトに従って作成してみてください。
+(https://tamak1313.github.io/cosmobook/)
+
+## 対象者
+
++ 衛星データ初心者  
+
++ GEE初心者  
+
+## 作業環境
+
+2020年12月現在
+Windows 10 64bit

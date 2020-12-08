@@ -1,0 +1,62 @@
+# データの選択と前処理
+
+用語集
++ ジオメトリー(geometry):  
+
+![GEE画面](images/GEE.png)
+①
+
+②
+
+③
+
+```
+var aoi = ee.FeatureCollection(geometry);    //ジオメトリーの名称を変更する 
+
+// パラメーターを定義する前のSentinel-1 GRD(対象データ)をロードし、フィルターをかける 
+var collection= ee.ImageCollection('COPERNICUS/S1_GRD')
+  .filter(ee.Filter.eq('instrumentMode','IW'))
+  .filter(ee.Filter.listContains('transmitterReceiverPolarisation', polarization))
+  .filter(ee.Filter.eq('orbitProperties_pass',pass_direction)) 
+  .filter(ee.Filter.eq('resolution_meters',10))
+  //.filter(ee.Filter.eq('relativeOrbitNumber_start',relative_orbit ))
+  .filterBounds(aoi)
+  .select(polarization);
+  
+// Select images by predefined dates
+var before_collection = collection.filterDate(before_start, before_end);
+var after_collection = collection.filterDate(after_start,after_end);
+
+// Print selected tiles to the console
+
+      //　メタデータからデータを抽出する(メタデータ：：主となるデータの説明書きが書いてあるデータ)
+      function dates(imgcol){
+        var range = imgcol.reduceColumns(ee.Reducer.minMax(), ["system:time_start"]);
+        var printed = ee.String('from ')
+          .cat(ee.Date(range.get('min')).format('YYYY-MM-dd'))
+          .cat(' to ')
+          .cat(ee.Date(range.get('max')).format('YYYY-MM-dd'));
+        return printed;
+      }
+      // コンソールに洪水前画像を表示する
+      var before_count = before_collection.size();
+      print(ee.String('Tiles selected: Before Flood ').cat('(').cat(before_count).cat(')'),
+        dates(before_collection), before_collection);
+      
+      // コンソールに洪水後画像を表示する
+      var after_count = before_collection.size();
+      print(ee.String('Tiles selected: After Flood ').cat('(').cat(after_count).cat(')'),
+        dates(after_collection), after_collection);
+
+// 選択したタイルにモザイクをかけ、対象エリアをクリップする
+var before = before_collection.mosaic().clip(aoi);
+var after = after_collection.mosaic().clip(aoi);
+
+// レーダーの反転をSmoothingすることによって減らす  
+var smoothing_radius = 50;
+var before_filtered = before.focal_mean(smoothing_radius, 'circle', 'meters');
+var after_filtered = after.focal_mean(smoothing_radius, 'circle', 'meters');
+
+
+```  
+

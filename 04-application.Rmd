@@ -1,0 +1,124 @@
+# 被害評価
+
+## "Estimated number of exposed people"
+
+```
+// JRCレイヤー(JRC Global Human Settlement Popluation Density layer)をロードする
+// Resolution: 250. １セル当たりの人口
+var population_count = ee.Image('JRC/GHSL/P2016/POP_GPW_GLOBE_V1/2015').clip(aoi);
+```
+
+### 被害人口を算出する
+
+```
+// GHSL(the Global Human Settlement Layer))を投影させる
+var GHSLprojection = population_count.projection();
+
+// GHSLスケールに洪水レイヤーをReprojectする？
+var flooded_res1 = flooded
+    .reproject({
+    crs: GHSLprojection
+  });
+
+// the resampled flood layerを使い、被害人口を示すレイヤーを作成する
+var population_exposed = population_count
+  .updateMask(flooded_res1)
+  .updateMask(population_count);
+
+//被害人口ラスターのピクセルあたりの数値を計算する 
+var stats = population_exposed.reduceRegion({
+  reducer: ee.Reducer.sum(),
+  geometry: aoi,
+  scale: 250,
+  maxPixels:1e9 
+});
+
+// 被害人口を整数値で算出する
+var number_pp_exposed = stats.getNumber('population_count').round();
+```
+
+##  "Estimated affected cropland" 
+
+```
+// MODIS Land Cover Type Yearly Global 500mを使用する
+// 最新の土地被覆データ(MODIS)をフィルターにかける 
+var LC = ee.ImageCollection('MODIS/006/MCD12Q1')
+  .filterDate('2014-01-01',after_end)
+  .sort('system:index',false)
+  .select("LC_Type1")
+  .first()
+  .clip(aoi);
+
+// the classes cropland (>60%) and Cropland/Natural である耕作地ピクセルだけを抽出する
+// 植生モザイク: mosaics of small-scale cultivation 40-60% incl. natural vegetation
+var cropmask = LC
+  .eq(12)
+  .or(LC.eq(14))
+var cropland = LC
+  .updateMask(cropmask)
+  
+// MODISを投影させる
+var MODISprojection = LC.projection();
+
+// MODISスケールにflood layerをReprojectする
+var flooded_res = flooded
+    .reproject({
+    crs: MODISprojection
+  });
+
+// the resampled flood layerを使って、耕作地への影響を算出する
+var cropland_affected = flooded_res
+  .updateMask(cropland)
+
+// get pixel area of affected cropland layer
+var crop_pixelarea = cropland_affected
+  .multiply(ee.Image.pixelArea()); //calcuate the area of each pixel 
+
+// affected cropland layerのピクセルを足し合わせる
+var crop_stats = crop_pixelarea.reduceRegion({
+  reducer: ee.Reducer.sum(), //sum all pixels with area information                
+  geometry: aoi,
+  scale: 500,
+  maxPixels: 1e9
+  });
+  
+// ヘクタールに換算する
+var crop_area_ha = crop_stats
+  .getNumber(polarization)
+  .divide(10000)
+  .round();
+```
+
+
+##  "Estimated affected urban area"
+
+```
+// Using the same MODIS Land Cover Product 
+// 都市エリアをフィルターにかける
+var urbanmask = LC.eq(13)
+var urban = LC
+  .updateMask(urbanmask)
+
+//Calculate affected urban areas using the resampled flood layer
+var urban_affected = urban
+  .mask(flooded_res)
+  .updateMask(urban);
+
+// get pixel area of affected urban layer
+var urban_pixelarea = urban_affected
+  .multiply(ee.Image.pixelArea()); //calcuate the area of each pixel 
+
+// sum pixels of affected cropland layer
+var urban_stats = urban_pixelarea.reduceRegion({
+  reducer: ee.Reducer.sum(), //sum all pixels with area information                
+  geometry: aoi,
+  scale: 500,
+  bestEffort: true,
+  });
+
+// convert area to hectares
+var urban_area_ha = urban_stats
+  .getNumber('LC_Type1')
+  .divide(10000)
+  .round();
+```

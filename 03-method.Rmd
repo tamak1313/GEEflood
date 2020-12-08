@@ -1,0 +1,55 @@
+# 浸水範囲の算出
+
+```
+// 洪水前後画像を計算する
+var difference = after_filtered.divide(before_filtered);
+
+// 定義済みの差分しきい値を適用して、洪水範囲マスクを作成 
+var threshold = difference_threshold;
+var difference_binary = difference.gt(threshold);
+
+//追加的なデータセットを使って、結果を再定義する
+      
+      // JRCレイヤーInclude JRC layer on surface water seasonality to mask flood pixels from areas
+      // of "permanent" water (where there is water > 10 months of the year)
+      var swater = ee.Image('JRC/GSW1_0/GlobalSurfaceWater').select('seasonality');
+      var swater_mask = swater.gte(10).updateMask(swater.gte(10));
+      
+      //Flooded layer where perennial water bodies (water > 10 mo/yr) is assigned a 0 value
+      var flooded_mask = difference_binary.where(swater_mask,0);
+      // final flooded area without pixels in perennial waterbodies
+      var flooded = flooded_mask.updateMask(flooded_mask);
+      
+      // Compute connectivity of pixels to eliminate those connected to 8 or fewer neighbours
+      // This operation reduces noise of the flood extent product 
+      var connections = flooded.connectedPixelCount();    
+      var flooded = flooded.updateMask(connections.gte(8));
+      
+      // Mask out areas with more than 5 percent slope using a Digital Elevation Model 
+      var DEM = ee.Image('WWF/HydroSHEDS/03VFDEM');
+      var terrain = ee.Algorithms.Terrain(DEM);
+      var slope = terrain.select('slope');
+      var flooded = flooded.updateMask(slope.lt(5));
+
+//洪水面積を計算する
+// それぞれのピクセルの地域情報を含んだラスターレイヤーを作成 
+var flood_pixelarea = flooded.select(polarization)
+  .multiply(ee.Image.pixelArea());
+
+// 洪水被害を受けたピクセルの面積を集積
+// 演算時間を減らすためのデフォルト設定(正確な結果を算出したい場合は、”bestEffort”をfalseに設定し、maxPixelsを増加させる)
+var flood_stats = flood_pixelarea.reduceRegion({
+  reducer: ee.Reducer.sum(),              
+  geometry: aoi,
+  scale: 10, // native resolution 
+  //maxPixels: 1e9,
+  bestEffort: true
+  });
+
+// メートルをヘクタールに変換  
+var flood_area_ha = flood_stats
+  .getNumber(polarization)
+  .divide(10000)
+  .round(); 
+
+```

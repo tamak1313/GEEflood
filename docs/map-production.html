@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 6 MAP PRODUCTION | GEE学習サイト</title>
+  <meta name="description" content="GEEを活用して洪水被害図を作成してみましょう" />
+  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 6 MAP PRODUCTION | GEE学習サイト" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="GEEを活用して洪水被害図を作成してみましょう" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 6 MAP PRODUCTION | GEE学習サイト" />
+  
+  <meta name="twitter:description" content="GEEを活用して洪水被害図を作成してみましょう" />
+  
+
+<meta name="author" content="Tamaki.M" />
+
+
+<meta name="date" content="2020-12-07" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="プロダクトの表示.html"/>
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">A Minimal Book Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>初めに</a><ul>
+<li class="chapter" data-level="0.1" data-path="index.html"><a href="index.html#対象者"><i class="fa fa-check"></i><b>0.1</b> 対象者</a></li>
+<li class="chapter" data-level="0.2" data-path="index.html"><a href="index.html#作業環境"><i class="fa fa-check"></i><b>0.2</b> 作業環境</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="section.html"><a href="section.html"><i class="fa fa-check"></i><b>1</b> 1</a><ul>
+<li class="chapter" data-level="1.1" data-path="section.html"><a href="section.html#対象エリア"><i class="fa fa-check"></i><b>1.1</b> 対象エリア</a></li>
+<li class="chapter" data-level="1.2" data-path="section.html"><a href="section.html#対象期間"><i class="fa fa-check"></i><b>1.2</b> 対象期間</a></li>
+<li class="chapter" data-level="1.3" data-path="section.html"><a href="section.html#各種設定"><i class="fa fa-check"></i><b>1.3</b> 各種設定</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="データの選択と前処理.html"><a href="データの選択と前処理.html"><i class="fa fa-check"></i><b>2</b> データの選択と前処理</a></li>
+<li class="chapter" data-level="3" data-path="浸水範囲の算出.html"><a href="浸水範囲の算出.html"><i class="fa fa-check"></i><b>3</b> 浸水範囲の算出</a></li>
+<li class="chapter" data-level="4" data-path="被害評価.html"><a href="被害評価.html"><i class="fa fa-check"></i><b>4</b> 被害評価</a><ul>
+<li class="chapter" data-level="4.1" data-path="被害評価.html"><a href="被害評価.html#estimated-number-of-exposed-people"><i class="fa fa-check"></i><b>4.1</b> “Estimated number of exposed people”</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="被害評価.html"><a href="被害評価.html#被害人口を算出する"><i class="fa fa-check"></i><b>4.1.1</b> 被害人口を算出する</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="被害評価.html"><a href="被害評価.html#estimated-affected-cropland"><i class="fa fa-check"></i><b>4.2</b> “Estimated affected cropland”</a></li>
+<li class="chapter" data-level="4.3" data-path="被害評価.html"><a href="被害評価.html#estimated-affected-urban-area"><i class="fa fa-check"></i><b>4.3</b> “Estimated affected urban area”</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="プロダクトの表示.html"><a href="プロダクトの表示.html"><i class="fa fa-check"></i><b>5</b> プロダクトの表示</a></li>
+<li class="chapter" data-level="6" data-path="map-production.html"><a href="map-production.html"><i class="fa fa-check"></i><b>6</b> MAP PRODUCTION</a><ul>
+<li class="chapter" data-level="6.1" data-path="map-production.html"><a href="map-production.html#地図上に結果を表示する①"><i class="fa fa-check"></i><b>6.1</b> 地図上に結果を表示する①</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="map-production.html"><a href="map-production.html#結果が表示されるパネルの位置を設定する"><i class="fa fa-check"></i><b>6.1.1</b> 結果が表示されるパネルの位置を設定する　　</a></li>
+<li class="chapter" data-level="6.1.2" data-path="map-production.html"><a href="map-production.html#表示形式を設定する"><i class="fa fa-check"></i><b>6.1.2</b> 表示形式を設定する</a></li>
+<li class="chapter" data-level="6.1.3" data-path="map-production.html"><a href="map-production.html#結果のラベルを作成する"><i class="fa fa-check"></i><b>6.1.3</b> 結果のラベルを作成する</a></li>
+<li class="chapter" data-level="6.1.4" data-path="map-production.html"><a href="map-production.html#パネルにラベルを加える"><i class="fa fa-check"></i><b>6.1.4</b> パネルにラベルを加える</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="map-production.html"><a href="map-production.html#凡例を作成する②"><i class="fa fa-check"></i><b>6.2</b> 凡例を作成する②</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="map-production.html"><a href="map-production.html#パネルの位置を設定する"><i class="fa fa-check"></i><b>6.2.1</b> パネルの位置を設定する</a></li>
+<li class="chapter" data-level="6.2.2" data-path="map-production.html"><a href="map-production.html#塗分けの凡例を作成する"><i class="fa fa-check"></i><b>6.2.2</b> 塗分けの凡例を作成する</a></li>
+<li class="chapter" data-level="6.2.3" data-path="map-production.html"><a href="map-production.html#exposed-population-densityの凡例を作成する"><i class="fa fa-check"></i><b>6.2.3</b> “Exposed population density”の凡例を作成する</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="map-production.html"><a href="map-production.html#地図上に凡例を表示する"><i class="fa fa-check"></i><b>6.3</b> 地図上に凡例を表示する</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">GEE学習サイト</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="map-production" class="section level1">
+<h1><span class="header-section-number">Chapter 6</span> MAP PRODUCTION</h1>
+<div id="地図上に結果を表示する①" class="section level2">
+<h2><span class="header-section-number">6.1</span> 地図上に結果を表示する①</h2>
+<div class="figure">
+<img src="images/example1.png" alt="" />
+<p class="caption">パネル表示①</p>
+</div>
+<div id="結果が表示されるパネルの位置を設定する" class="section level3">
+<h3><span class="header-section-number">6.1.1</span> 結果が表示されるパネルの位置を設定する　　</h3>
+<pre><code>var results = ui.Panel({
+  style: {
+    position: &#39;bottom-left&#39;,
+    padding: &#39;8px 15px&#39;,
+    width: &#39;350px&#39;
+  }
+});</code></pre>
+</div>
+<div id="表示形式を設定する" class="section level3">
+<h3><span class="header-section-number">6.1.2</span> 表示形式を設定する</h3>
+<pre><code>var textVis = {
+  &#39;margin&#39;:&#39;0px 8px 2px 0px&#39;,
+  &#39;fontWeight&#39;:&#39;bold&#39;
+  };
+var numberVIS = {
+  &#39;margin&#39;:&#39;0px 0px 15px 0px&#39;, 
+  &#39;color&#39;:&#39;bf0f19&#39;,
+  &#39;fontWeight&#39;:&#39;bold&#39;
+  };
+var subTextVis = {
+  &#39;margin&#39;:&#39;0px 0px 2px 0px&#39;,
+  &#39;fontSize&#39;:&#39;12px&#39;,
+  &#39;color&#39;:&#39;grey&#39;
+  };
+
+var titleTextVis = {
+  &#39;margin&#39;:&#39;0px 0px 15px 0px&#39;,
+  &#39;fontSize&#39;: &#39;18px&#39;, 
+  &#39;font-weight&#39;:&#39;&#39;, 
+  &#39;color&#39;: &#39;3333ff&#39;
+  };</code></pre>
+</div>
+<div id="結果のラベルを作成する" class="section level3">
+<h3><span class="header-section-number">6.1.3</span> 結果のラベルを作成する</h3>
+<pre><code>// タイトル
+var title = ui.Label(&#39;Results&#39;, titleTextVis);
+// &quot;Flood status between&quot;
+var text1 = ui.Label(&#39;Flood status between:&#39;,textVis);
+var number1 = ui.Label(after_start.concat(&quot; and &quot;,after_end),numberVIS);
+
+// &quot;Estimated flood extent&quot;
+var text2 = ui.Label(&#39;Estimated flood extent:&#39;,textVis);
+var text2_2 = ui.Label(&#39;Please wait...&#39;,subTextVis);
+dates(after_collection).evaluate(function(val){text2_2.setValue(&#39;based on Senintel-1 imagery &#39;+val)});
+var number2 = ui.Label(&#39;Please wait...&#39;,numberVIS); 
+flood_area_ha.evaluate(function(val){number2.setValue(val+&#39; hectares&#39;)}),numberVIS;
+
+// &quot;Estimated number of exposed people&quot;
+var text3 = ui.Label(&#39;Estimated number of exposed people: &#39;,textVis);
+var text3_2 = ui.Label(&#39;based on GHSL 2015 (250m)&#39;,subTextVis);
+var number3 = ui.Label(&#39;Please wait...&#39;,numberVIS);
+number_pp_exposed.evaluate(function(val){number3.setValue(val)}),numberVIS;
+
+// &quot;Estimated affected cropland&quot;
+var MODIS_date = ee.String(LC.get(&#39;system:index&#39;)).slice(0,4);
+var text4 = ui.Label(&#39;Estimated affected cropland:&#39;,textVis);
+var text4_2 = ui.Label(&#39;Please wait&#39;, subTextVis)
+MODIS_date.evaluate(function(val){text4_2.setValue(&#39;based on MODIS Land Cover &#39;+val +&#39; (500m)&#39;)}), subTextVis;
+var number4 = ui.Label(&#39;Please wait...&#39;,numberVIS);
+crop_area_ha.evaluate(function(val){number4.setValue(val+&#39; hectares&#39;)}),numberVIS;
+
+// &quot;Estimated affected urban area&quot;
+var text5 = ui.Label(&#39;Estimated affected urban areas:&#39;,textVis);
+var text5_2 = ui.Label(&#39;Please wait&#39;, subTextVis)
+MODIS_date.evaluate(function(val){text5_2.setValue(&#39;based on MODIS Land Cover &#39;+val +&#39; (500m)&#39;)}), subTextVis;
+var number5 = ui.Label(&#39;Please wait...&#39;,numberVIS);
+urban_area_ha.evaluate(function(val){number5.setValue(val+&#39; hectares&#39;)}),numberVIS;
+
+// 責任・権利利関連
+var text6 = ui.Label
+(&#39;Disclaimer: This product has been derived automatically without validation data. All geographic information has limitations due to the scale, resolution, date and interpretation of the original source materials. No liability concerning the content or the use thereof is assumed by the producer.&#39;,subTextVis)
+
+// Produced by...
+var text7 = ui.Label(&#39;Script produced by: UN-SPIDER December 2019&#39;, subTextVis)</code></pre>
+</div>
+<div id="パネルにラベルを加える" class="section level3">
+<h3><span class="header-section-number">6.1.4</span> パネルにラベルを加える</h3>
+<pre><code>results.add(ui.Panel([
+        title,
+        text1,
+        number1,
+        text2,
+        text2_2,
+        number2,
+        text3,
+        text3_2,
+        number3,
+        text4,
+        text4_2,
+        number4,
+        text5,
+        text5_2,
+        number5,
+        text6,
+        text7]
+      ));
+
+// 地図にパネルを加える 
+Map.add(results);</code></pre>
+</div>
+</div>
+<div id="凡例を作成する②" class="section level2">
+<h2><span class="header-section-number">6.2</span> 凡例を作成する②</h2>
+<p>(参考：<a href="https://mygeoblog.com/2016/12/09/add-a-legend-to-to-your-gee-map/" class="uri">https://mygeoblog.com/2016/12/09/add-a-legend-to-to-your-gee-map/</a>)<br />
+<img src="images/example1.png" alt="凡例②" /></p>
+<div id="パネルの位置を設定する" class="section level3">
+<h3><span class="header-section-number">6.2.1</span> パネルの位置を設定する</h3>
+<pre><code>var legend = ui.Panel({
+  style: {
+    position: &#39;bottom-right&#39;,
+    padding: &#39;8px 15px&#39;,
+  }
+});</code></pre>
+</div>
+<div id="塗分けの凡例を作成する" class="section level3">
+<h3><span class="header-section-number">6.2.2</span> 塗分けの凡例を作成する</h3>
+<pre><code>//凡例のタイトルを作成する
+var legendTitle = ui.Label(&#39;Legend&#39;,titleTextVis);
+
+//パネルにタイトルをつける
+legend.add(legendTitle);
+
+//凡例のスタイルを設定する
+var makeRow = function(color, name) {
+ 
+      // ラベル(カラーボックス)を作成する
+      var colorBox = ui.Label({
+        style: {
+          backgroundColor: color,
+          // Use padding to give the box height and width.
+          padding: &#39;8px&#39;,
+          margin: &#39;0 0 4px 0&#39;
+        }
+      });
+ 
+      // 説明をつける
+      var description = ui.Label({
+        value: name,
+        style: {margin: &#39;0 0 4px 6px&#39;}
+      });
+ 
+      // 垂直に並べる
+      return ui.Panel({
+        widgets: [colorBox, description],
+        layout: ui.Panel.Layout.Flow(&#39;horizontal&#39;)
+      });
+};
+
+//  色
+var palette =[&#39;#0000FF&#39;, &#39;#30b21c&#39;, &#39;grey&#39;];
+ 
+// 凡例の名前を設定する
+var names = [&#39;potentially flooded areas&#39;,&#39;affected cropland&#39;,&#39;affected urban&#39;];
+ 
+// 色と名前を加える
+for (var i = 0; i &lt; 3; i++) {
+  legend.add(makeRow(palette[i], names[i]));
+  }  </code></pre>
+</div>
+<div id="exposed-population-densityの凡例を作成する" class="section level3">
+<h3><span class="header-section-number">6.2.3</span> “Exposed population density”の凡例を作成する</h3>
+<pre><code>var legendTitle2 = ui.Label({
+value: &#39;Exposed population density&#39;,
+style: {
+fontWeight: &#39;bold&#39;,
+fontSize: &#39;15px&#39;,
+margin: &#39;10px 0 0 0&#39;,
+padding: &#39;0&#39;
+}
+});
+
+// パネルにタイトルをつける
+legend.add(legendTitle2);
+
+// 凡例を作成する
+var lon = ee.Image.pixelLonLat().select(&#39;latitude&#39;);
+var gradient = lon.multiply((populationExposedVis.max-populationExposedVis.min)/100.0).add(populationExposedVis.min);
+var legendImage = gradient.visualize(populationExposedVis);</code></pre>
+</div>
+</div>
+<div id="地図上に凡例を表示する" class="section level2">
+<h2><span class="header-section-number">6.3</span> 地図上に凡例を表示する</h2>
+<pre><code>// 凡例の一番上に文章を作成する？
+var panel = ui.Panel({
+widgets: [
+ui.Label(&#39;&gt; &#39;.concat(populationExposedVis[&#39;max&#39;]))
+],
+});
+ 
+legend.add(panel);
+ 
+// 画像からサムネイルを作成する
+var thumbnail = ui.Thumbnail({
+image: legendImage,
+params: {bbox:&#39;0,0,10,100&#39;, dimensions:&#39;10x50&#39;},
+style: {padding: &#39;1px&#39;, position: &#39;bottom-center&#39;}
+});
+ 
+// 凡例にサムネイルをつける
+legend.add(thumbnail);
+ 
+// 凡例の一番上に文章を作成する？
+var panel = ui.Panel({
+widgets: [
+ui.Label(populationExposedVis[&#39;min&#39;])
+],
+});
+ 
+legend.add(panel);
+ 
+// 地図上に凡例を表示させる
+Map.add(legend);</code></pre>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="プロダクトの表示.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["GEE-flood.pdf", "GEE-flood.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
