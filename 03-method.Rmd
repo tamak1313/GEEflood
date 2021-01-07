@@ -1,43 +1,59 @@
 # 浸水範囲の算出
 
+JRCレイヤー、HydroSHEDSを使って、浸水範囲を算出する方法を説明します。  
+
+<b>JRC Global Surface Water Mapping Layers, v1.2</b>：1984年から2019年までの表層水の位置と時間的分布のマップが含まれており、それらの水面の広がりと変化に関する統計を提供している。
+
+<b>WWF/HydroSHEDS/03VFDEM</b>：HydroSHEDSは、地域規模および地球規模のアプリケーションのための水文情報を一貫したフォーマットで提供するマッピング製品。河川ネットワーク、流域境界、排水方向、流量累積など、様々なスケールの地理参照データセット（ベクトルとラスター）を提供し、NASAのシャトルレーダー地形ミッション（SRTM）によって2000年に取得された標高データに基づいている。
+
+## 洪水前後の画像を比較する　　
+
+洪水前後の画像を比較し、洪水による浸水域を検出してみましょう。  
+
+まず、洪水前後画像を計算します。
 ```
-// 洪水前後画像を計算する
 var difference = after_filtered.divide(before_filtered);
 
-// 定義済みの差分しきい値を適用して、洪水範囲マスクを作成 
+// 定義済みの差分しきい値を適用して、洪水範囲マスクを作成(あらかじめ定義した基準となる値と各値を比較することによって、洪水前後の変化有無を判定する) 
 var threshold = difference_threshold;
 var difference_binary = difference.gt(threshold);
+```
 
-//追加的なデータセットを使って、結果を再定義する
-      
-      // JRCレイヤーInclude JRC layer on surface water seasonality to mask flood pixels from areas
-      // of "permanent" water (where there is water > 10 months of the year)
+ほかのデータセットを使って、さらに結果の精度を高めていきましょう。
+```
+// JRCレイヤーを利用して、parmanent water(洪水に関わらず、常にある水)を検出する。
       var swater = ee.Image('JRC/GSW1_0/GlobalSurfaceWater').select('seasonality');
-      var swater_mask = swater.gte(10).updateMask(swater.gte(10));
+      var swater_mask = swater.gte(10).updateMask(swater.gte(10));　
       
-      //Flooded layer where perennial water bodies (water > 10 mo/yr) is assigned a 0 value
+      // 多年水域(水量＞10か月/年)を０とする浸水層
       var flooded_mask = difference_binary.where(swater_mask,0);
-      // final flooded area without pixels in perennial waterbodies
+      // 洪水による浸水エリア
       var flooded = flooded_mask.updateMask(flooded_mask);
       
-      // Compute connectivity of pixels to eliminate those connected to 8 or fewer neighbours
-      // This operation reduces noise of the flood extent product 
+      // ピクセルの接続性を計算する。この操作により、洪水範囲プロダクトのノイズを低減できる
       var connections = flooded.connectedPixelCount();    
       var flooded = flooded.updateMask(connections.gte(8));
       
-      // Mask out areas with more than 5 percent slope using a Digital Elevation Model 
+      // デジタル標高モデルを使用して、5％以上の傾斜がある領域をマスクアウトする
       var DEM = ee.Image('WWF/HydroSHEDS/03VFDEM');
       var terrain = ee.Algorithms.Terrain(DEM);
       var slope = terrain.select('slope');
       var flooded = flooded.updateMask(slope.lt(5));
+```
 
-//洪水面積を計算する
+
+
+
+## 洪水被害を受けたピクセルの面積を集計
+
+最終的な洪水面積を計算しましょう。
+
+```
 // それぞれのピクセルの地域情報を含んだラスターレイヤーを作成 
 var flood_pixelarea = flooded.select(polarization)
   .multiply(ee.Image.pixelArea());
 
-// 洪水被害を受けたピクセルの面積を集積
-// 演算時間を減らすためのデフォルト設定(正確な結果を算出したい場合は、”bestEffort”をfalseに設定し、maxPixelsを増加させる)
+// 演算時間を減らすため、デフォルト設定(正確な結果を算出したい場合は、”bestEffort”をfalseに設定し、maxPixelsを増加させる)
 var flood_stats = flood_pixelarea.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: aoi,

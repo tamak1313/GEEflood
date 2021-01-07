@@ -1,17 +1,31 @@
 # データの選択と前処理
 
-用語集
-+ ジオメトリー(geometry):  
-
+まずはGoogle earth engineの画面について、見ていきましょう。Google earth engineの画面は、大きく分けて下のような3パートに分かれています。
 ![GEE画面](images/GEE.png)
-①
+①Code　Editor：コードを入力する  
 
-②
+②  
 
-③
+Inspector：マップ上に配置されたオブジェクトを検索する  
+
+Console：生成されたマップやメッセージ(printした結果)が表示される  
+
+Tasks:タスクをエクスポートする。その際、ファイル形式や解像度を設定することが可能  
+
+
+③Map：Code Editor(①)に入力したコードの結果等がGoogleMap上に表示される
+
+
+①Code editorに実行したいコードを入力し、【RUN】すると、②Consoleに結果が出力され、③Map上に表示されます。結果を保存したい場合には、Consoleから保存作業を行うと、自身のGoogle Drive上に結果が保存されるようになっています。  
+
+
+
+## 対象画像の選択・出力と画像の前処理  
+
+それでは早速、コードの説明に入ります。。以下のコードは研究対象等によって変更することなく、そのまま使うことができます。
 
 ```
-var aoi = ee.FeatureCollection(geometry);    //ジオメトリーの名称を変更する 
+var aoi = ee.FeatureCollection(geometry);    //ジオメトリーの名称を"aoi"に変更する 
 
 // パラメーターを定義する前のSentinel-1 GRD(対象データ)をロードし、フィルターをかける 
 var collection= ee.ImageCollection('COPERNICUS/S1_GRD')
@@ -23,13 +37,13 @@ var collection= ee.ImageCollection('COPERNICUS/S1_GRD')
   .filterBounds(aoi)
   .select(polarization);
   
-// Select images by predefined dates
+// 画像を選択する
 var before_collection = collection.filterDate(before_start, before_end);
 var after_collection = collection.filterDate(after_start,after_end);
 
-// Print selected tiles to the console
+// 選択したタイルをコンソールに出力する
 
-      //　メタデータからデータを抽出する(メタデータ：：主となるデータの説明書きが書いてあるデータ)
+      // メタデータからデータを抽出する(メタデータ：：主となるデータの説明書きが書いてあるデータ)
       function dates(imgcol){
         var range = imgcol.reduceColumns(ee.Reducer.minMax(), ["system:time_start"]);
         var printed = ee.String('from ')
@@ -38,12 +52,12 @@ var after_collection = collection.filterDate(after_start,after_end);
           .cat(ee.Date(range.get('max')).format('YYYY-MM-dd'));
         return printed;
       }
-      // コンソールに洪水前画像を表示する
+      // コンソールに洪水前画像を出力する
       var before_count = before_collection.size();
       print(ee.String('Tiles selected: Before Flood ').cat('(').cat(before_count).cat(')'),
         dates(before_collection), before_collection);
       
-      // コンソールに洪水後画像を表示する
+      // コンソールに洪水後画像を出力する
       var after_count = before_collection.size();
       print(ee.String('Tiles selected: After Flood ').cat('(').cat(after_count).cat(')'),
         dates(after_collection), after_collection);
@@ -52,7 +66,7 @@ var after_collection = collection.filterDate(after_start,after_end);
 var before = before_collection.mosaic().clip(aoi);
 var after = after_collection.mosaic().clip(aoi);
 
-// レーダーの反転をSmoothingすることによって減らす  
+// Smoothing  
 var smoothing_radius = 50;
 var before_filtered = before.focal_mean(smoothing_radius, 'circle', 'meters');
 var after_filtered = after.focal_mean(smoothing_radius, 'circle', 'meters');

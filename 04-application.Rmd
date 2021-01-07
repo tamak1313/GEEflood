@@ -1,10 +1,23 @@
-# 被害評価
+# 被害評価　　
+
+この章では、各ピクセルにおける被害状況を算出する方法を説明します。
+
+"Estimated number of exposed people"：洪水の影響を受けた推定人口
+
+"Estimated affected cropland"：影響を受けた耕作地の推定面積　　
+
+"Estimated affected urban area"：影響を受けた都市の推定面積
+
 
 ## "Estimated number of exposed people"
 
+JRC Global Human Settlement Popluation Density layerを利用して、洪水の影響を受けた人口を算出します。  
+
+<b>JRC Global Human Settlement Popluation Density layer</b>：参照期間（1975年、1990年、2000年、2015年）の人口分布と密度を、1セルあたりの人口数で表したもの　　
+
 ```
 // JRCレイヤー(JRC Global Human Settlement Popluation Density layer)をロードする
-// Resolution: 250. １セル当たりの人口
+Resolution: 250. 　//１セル当たりの人口
 var population_count = ee.Image('JRC/GHSL/P2016/POP_GPW_GLOBE_V1/2015').clip(aoi);
 ```
 
@@ -14,7 +27,7 @@ var population_count = ee.Image('JRC/GHSL/P2016/POP_GPW_GLOBE_V1/2015').clip(aoi
 // GHSL(the Global Human Settlement Layer))を投影させる
 var GHSLprojection = population_count.projection();
 
-// GHSLスケールに洪水レイヤーをReprojectする？
+// GHSLスケールに洪水レイヤーを再投影する
 var flooded_res1 = flooded
     .reproject({
     crs: GHSLprojection
@@ -43,24 +56,24 @@ var number_pp_exposed = stats.getNumber('population_count').round();
 // MODIS Land Cover Type Yearly Global 500mを使用する
 // 最新の土地被覆データ(MODIS)をフィルターにかける 
 var LC = ee.ImageCollection('MODIS/006/MCD12Q1')
-  .filterDate('2014-01-01',after_end)
-  .sort('system:index',false)
-  .select("LC_Type1")
-  .first()
-  .clip(aoi);
+  .filterDate('2014-01-01',after_end) 　　//日時の設定
+  .sort('system:index',false)　　　　　 　
+  .select("LC_Type1")　　　　           　//Layersの指定
+  .first()                                
+  .clip(aoi);　　　　　　　　           　//画像をジオメトリにクリップする
 
 // the classes cropland (>60%) and Cropland/Natural である耕作地ピクセルだけを抽出する
 // 植生モザイク: mosaics of small-scale cultivation 40-60% incl. natural vegetation
-var cropmask = LC
-  .eq(12)
-  .or(LC.eq(14))
+var cropmask = LC  
+  .eq(12)          //与えられた値と等しいメタデータにフィルターをかける
+  .or(LC.eq(14))　 
 var cropland = LC
-  .updateMask(cropmask)
+  .updateMask(cropmask)　//既存のマスクがゼロではないすべての位置で画像のマスクを更新。出力画像は入力画像のメタデータとフットプリントを保持する。
   
 // MODISを投影させる
 var MODISprojection = LC.projection();
 
-// MODISスケールにflood layerをReprojectする
+// MODISスケールにflood layerを再投影する
 var flooded_res = flooded
     .reproject({
     crs: MODISprojection
@@ -70,7 +83,7 @@ var flooded_res = flooded
 var cropland_affected = flooded_res
   .updateMask(cropland)
 
-// get pixel area of affected cropland layer
+// affected cropland layerのピクセルを取得する
 var crop_pixelarea = cropland_affected
   .multiply(ee.Image.pixelArea()); //calcuate the area of each pixel 
 
@@ -92,23 +105,25 @@ var crop_area_ha = crop_stats
 
 ##  "Estimated affected urban area"
 
+同様にして都市部についても算出します。
+
 ```
-// Using the same MODIS Land Cover Product 
+// MODIS Land Coverを使用する 
 // 都市エリアをフィルターにかける
 var urbanmask = LC.eq(13)
 var urban = LC
   .updateMask(urbanmask)
 
-//Calculate affected urban areas using the resampled flood layer
+//the resampled flood layerを使って、影響を受けた都市部を算出する
 var urban_affected = urban
   .mask(flooded_res)
   .updateMask(urban);
 
-// get pixel area of affected urban layer
+// affected urban layerのピクセルを取得する
 var urban_pixelarea = urban_affected
   .multiply(ee.Image.pixelArea()); //calcuate the area of each pixel 
 
-// sum pixels of affected cropland layer
+// affected cropland layerのピクセルを集計する
 var urban_stats = urban_pixelarea.reduceRegion({
   reducer: ee.Reducer.sum(), //sum all pixels with area information                
   geometry: aoi,
@@ -116,7 +131,7 @@ var urban_stats = urban_pixelarea.reduceRegion({
   bestEffort: true,
   });
 
-// convert area to hectares
+//　ヘクタールに換算する
 var urban_area_ha = urban_stats
   .getNumber('LC_Type1')
   .divide(10000)

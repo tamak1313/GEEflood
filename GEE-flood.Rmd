@@ -1,203 +1,121 @@
-% Options for packages loaded elsewhere
-\PassOptionsToPackage{unicode}{hyperref}
-\PassOptionsToPackage{hyphens}{url}
-%
-\documentclass[
-]{book}
-\usepackage{lmodern}
-\usepackage{amssymb,amsmath}
-\usepackage{ifxetex,ifluatex}
-\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
-  \usepackage[T1]{fontenc}
-  \usepackage[utf8]{inputenc}
-  \usepackage{textcomp} % provide euro and other symbols
-\else % if luatex or xetex
-  \usepackage{unicode-math}
-  \defaultfontfeatures{Scale=MatchLowercase}
-  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
-\fi
-% Use upquote if available, for straight quotes in verbatim environments
-\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
-\IfFileExists{microtype.sty}{% use microtype if available
-  \usepackage[]{microtype}
-  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
-}{}
-\makeatletter
-\@ifundefined{KOMAClassName}{% if non-KOMA class
-  \IfFileExists{parskip.sty}{%
-    \usepackage{parskip}
-  }{% else
-    \setlength{\parindent}{0pt}
-    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
-}{% if KOMA class
-  \KOMAoptions{parskip=half}}
-\makeatother
-\usepackage{xcolor}
-\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
-\hypersetup{
-  pdftitle={GEE学習サイト},
-  pdfauthor={Tamaki.M},
-  hidelinks,
-  pdfcreator={LaTeX via pandoc}}
-\urlstyle{same} % disable monospaced font for URLs
-\usepackage{longtable,booktabs}
-% Correct order of tables after \paragraph or \subparagraph
-\usepackage{etoolbox}
-\makeatletter
-\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
-\makeatother
-% Allow footnotes in longtable head/foot
-\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
-\makesavenoteenv{longtable}
-\usepackage{graphicx,grffile}
-\makeatletter
-\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
-\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
-\makeatother
-% Scale images if necessary, so that they will not overflow the page
-% margins by default, and it is still possible to overwrite the defaults
-% using explicit options in \includegraphics[width, height, ...]{}
-\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
-% Set default figure placement to htbp
-\makeatletter
-\def\fps@figure{htbp}
-\makeatother
-\setlength{\emergencystretch}{3em} % prevent overfull lines
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-\setcounter{secnumdepth}{5}
-\usepackage{booktabs}
-\usepackage[]{natbib}
-\bibliographystyle{apalike}
+--- 
+title: "GEE学習サイト"
+author: "Tamaki.M"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+description: "GEEを活用して洪水被害図を作成してみましょう"
+---
 
-\title{GEE学習サイト}
-\author{Tamaki.M}
-\date{2021-01-07}
-
-\begin{document}
-\maketitle
-
-{
-\setcounter{tocdepth}{1}
-\tableofcontents
-}
-\hypertarget{ux521dux3081ux306b}{%
-\chapter*{初めに}\label{ux521dux3081ux306b}}
-\addcontentsline{toc}{chapter}{初めに}
+# 初めに {-}
 
 このサイトは、Google earth engineを活用して洪水被害図を作成する方法について詳細に紹介します。衛星データから自分が必要とするデータを作成したい、Google earth engine初心者の方を想定し、このサイトを読めば　　
 
 UN Spiderが提供しているコードにのっとって説明をしています。元のサイトは、以下のURLからら確認できます。
-(\url{https://un-spider.org/advisory-support/recommended-practices/recommended-practice-google-earth-engine-flood-mapping/step-by-step})
+(https://un-spider.org/advisory-support/recommended-practices/recommended-practice-google-earth-engine-flood-mapping/step-by-step)
 
 コードを詳しく知る前に、まずはどのようなものが出来上がるのか確認したいという方は、以下のサイトに従って作成してみてください。
-(\url{https://tamak1313.github.io/cosmobook/})
+(https://tamak1313.github.io/cosmobook/)
 
-\hypertarget{ux5bfeux8c61ux8005}{%
-\section{対象者}\label{ux5bfeux8c61ux8005}}
+## 対象者
 
-\begin{itemize}
-\item
-  衛星データ初心者
-\item
-  GEE初心者
-\end{itemize}
++ 衛星データ初心者  
 
-\hypertarget{ux4f5cux696dux74b0ux5883}{%
-\section{作業環境}\label{ux4f5cux696dux74b0ux5883}}
++ GEE初心者  
+
+## 作業環境
 
 2020年12月現在
 Windows 10 64bit
 
-\hypertarget{ux30b3ux30fcux30c9ux3092ux5229ux7528ux3057ux305fux6d2aux6c34ux30deux30c3ux30d7ux306eux4f5cux6210}{%
-\chapter{コードを利用した洪水マップの作成}\label{ux30b3ux30fcux30c9ux3092ux5229ux7528ux3057ux305fux6d2aux6c34ux30deux30c3ux30d7ux306eux4f5cux6210}}
+<!--chapter:end:index.Rmd-->
+
+# コードを利用した洪水マップの作成
 
 まずは以下のコードを自分の研究対象に書き換えてみましょう。
-(\url{https://un-spider.org/advisory-support/recommended-practices/recommended-practice-google-earth-engine-flood-mapping/step-by-step})
+(https://un-spider.org/advisory-support/recommended-practices/recommended-practice-google-earth-engine-flood-mapping/step-by-step)
 
 対象エリア、対象期間は以下の方法で変更することができます。
 
-\hypertarget{ux5bfeux8c61ux30a8ux30eaux30a2}{%
-\section{対象エリア}\label{ux5bfeux8c61ux30a8ux30eaux30a2}}
+## 対象エリア  
 
 ①地図上のツールバーの一番右(■)をクリックすると、研究対象エリアを四角形で囲むことができます。
 
-\begin{figure}
-\centering
-\includegraphics{images/geepolygon1.png}
-\caption{GEE polygon1}
-\end{figure}
+![GEE polygon1](images/geepolygon1.png)
 
 ②地図上のツールバーの右から2番目(5角形)をクリックすると、研究対象エリアにピンを立て、必要最低限のエリアを選択することが可能です。　　
 
-\begin{figure}
-\centering
-\includegraphics{images/geepolygon2.png}
-\caption{GEE polygon2}
-\end{figure}
+![GEE polygon2](images/geepolygon2.png)
 
-\hypertarget{ux5bfeux8c61ux671fux9593}{%
-\section{対象期間}\label{ux5bfeux8c61ux671fux9593}}
+
+## 対象期間  
 
 洪水前後の日時(期間)を設定しましょう。　　
 
-＊使用するデータはSentinel-1で6日周期であることに留意。
+＊使用するデータはSentinel-1で6日周期であることに留意。  
 
-\hypertarget{ux5404ux7a2eux8a2dux5b9a}{%
-\section{各種設定　　}\label{ux5404ux7a2eux8a2dux5b9a}}
+## 各種設定　　
 
 基本的にここのコードは変更せずに使います。。詳細な説明は省略しますが、対象地域等により、必要がある場合のみ変更して利用してみてください。
 
-\begin{verbatim}
+```
 var polarization = "VH"; /*or 'VV' 
-\end{verbatim}
+```
+SARセンサは縦方向の電磁波を送信します。縦波を単一平面(偏波)で送信することが可能です。洪水マッピングでは、ほとんどの場合VHが好まれます。  
 
-SARセンサは縦方向の電磁波を送信します。縦波を単一平面(偏波)で送信することが可能です。洪水マッピングでは、ほとんどの場合VHが好まれます。
+VH:垂直送信、水平受信  
 
-VH:垂直送信、水平受信
+VV:垂直送信、垂直受信  
 
-VV:垂直送信、垂直受信
 
-\begin{verbatim}
+```
 var pass_direction = "DESCENDING"; /* or 'ASCENDING'
-\end{verbatim}
+```
 
-\begin{verbatim}
+
+```
 var difference_threshold = 1.25;
-\end{verbatim}
+```
+差分画像に適用される閾値を定義します。  
 
-差分画像に適用される閾値を定義します。
-
-\begin{verbatim}
+```
 var relative_orbit = 79; 
-\end{verbatim}
+```
 
-\hypertarget{ux30c7ux30fcux30bfux306eux9078ux629eux3068ux524dux51e6ux7406}{%
-\chapter{データの選択と前処理}\label{ux30c7ux30fcux30bfux306eux9078ux629eux3068ux524dux51e6ux7406}}
+
+
+<!--chapter:end:01-intro.Rmd-->
+
+# データの選択と前処理
 
 まずはGoogle earth engineの画面について、見ていきましょう。Google earth engineの画面は、大きく分けて下のような3パートに分かれています。
-\includegraphics{images/GEE.png}
-①Code　Editor：コードを入力する
+![GEE画面](images/GEE.png)
+①Code　Editor：コードを入力する  
 
-②
+②  
 
-Inspector：マップ上に配置されたオブジェクトを検索する
+Inspector：マップ上に配置されたオブジェクトを検索する  
 
-Console：生成されたマップやメッセージ(printした結果)が表示される
+Console：生成されたマップやメッセージ(printした結果)が表示される  
 
-Tasks:タスクをエクスポートする。その際、ファイル形式や解像度を設定することが可能
+Tasks:タスクをエクスポートする。その際、ファイル形式や解像度を設定することが可能  
+
 
 ③Map：Code Editor(①)に入力したコードの結果等がGoogleMap上に表示される
 
-①Code editorに実行したいコードを入力し、【RUN】すると、②Consoleに結果が出力され、③Map上に表示されます。結果を保存したい場合には、Consoleから保存作業を行うと、自身のGoogle Drive上に結果が保存されるようになっています。
 
-\hypertarget{ux5bfeux8c61ux753bux50cfux306eux9078ux629eux51faux529bux3068ux753bux50cfux306eux524dux51e6ux7406}{%
-\section{対象画像の選択・出力と画像の前処理}\label{ux5bfeux8c61ux753bux50cfux306eux9078ux629eux51faux529bux3068ux753bux50cfux306eux524dux51e6ux7406}}
+①Code editorに実行したいコードを入力し、【RUN】すると、②Consoleに結果が出力され、③Map上に表示されます。結果を保存したい場合には、Consoleから保存作業を行うと、自身のGoogle Drive上に結果が保存されるようになっています。  
+
+
+
+## 対象画像の選択・出力と画像の前処理  
 
 それでは早速、コードの説明に入ります。。以下のコードは研究対象等によって変更することなく、そのまま使うことができます。
 
-\begin{verbatim}
+```
 var aoi = ee.FeatureCollection(geometry);    //ジオメトリーの名称を"aoi"に変更する 
 
 // パラメーターを定義する前のSentinel-1 GRD(対象データ)をロードし、フィルターをかける 
@@ -244,35 +162,35 @@ var smoothing_radius = 50;
 var before_filtered = before.focal_mean(smoothing_radius, 'circle', 'meters');
 var after_filtered = after.focal_mean(smoothing_radius, 'circle', 'meters');
 
-\end{verbatim}
 
-\hypertarget{ux6d78ux6c34ux7bc4ux56f2ux306eux7b97ux51fa}{%
-\chapter{浸水範囲の算出}\label{ux6d78ux6c34ux7bc4ux56f2ux306eux7b97ux51fa}}
+```  
 
-JRCレイヤー、HydroSHEDSを使って、浸水範囲を算出する方法を説明します。
 
-JRC Global Surface Water Mapping Layers, v1.2：1984年から2019年までの表層水の位置と時間的分布のマップが含まれており、それらの水面の広がりと変化に関する統計を提供している。
+<!--chapter:end:02-literature.Rmd-->
 
-WWF/HydroSHEDS/03VFDEM：HydroSHEDSは、地域規模および地球規模のアプリケーションのための水文情報を一貫したフォーマットで提供するマッピング製品。河川ネットワーク、流域境界、排水方向、流量累積など、様々なスケールの地理参照データセット（ベクトルとラスター）を提供し、NASAのシャトルレーダー地形ミッション（SRTM）によって2000年に取得された標高データに基づいている。
+# 浸水範囲の算出
 
-\hypertarget{ux6d2aux6c34ux524dux5f8cux306eux753bux50cfux3092ux6bd4ux8f03ux3059ux308b}{%
-\section{洪水前後の画像を比較する　　}\label{ux6d2aux6c34ux524dux5f8cux306eux753bux50cfux3092ux6bd4ux8f03ux3059ux308b}}
+JRCレイヤー、HydroSHEDSを使って、浸水範囲を算出する方法を説明します。  
 
-洪水前後の画像を比較し、洪水による浸水域を検出してみましょう。
+<b>JRC Global Surface Water Mapping Layers, v1.2</b>：1984年から2019年までの表層水の位置と時間的分布のマップが含まれており、それらの水面の広がりと変化に関する統計を提供している。
+
+<b>WWF/HydroSHEDS/03VFDEM</b>：HydroSHEDSは、地域規模および地球規模のアプリケーションのための水文情報を一貫したフォーマットで提供するマッピング製品。河川ネットワーク、流域境界、排水方向、流量累積など、様々なスケールの地理参照データセット（ベクトルとラスター）を提供し、NASAのシャトルレーダー地形ミッション（SRTM）によって2000年に取得された標高データに基づいている。
+
+## 洪水前後の画像を比較する　　
+
+洪水前後の画像を比較し、洪水による浸水域を検出してみましょう。  
 
 まず、洪水前後画像を計算します。
-
-\begin{verbatim}
+```
 var difference = after_filtered.divide(before_filtered);
 
 // 定義済みの差分しきい値を適用して、洪水範囲マスクを作成(あらかじめ定義した基準となる値と各値を比較することによって、洪水前後の変化有無を判定する) 
 var threshold = difference_threshold;
 var difference_binary = difference.gt(threshold);
-\end{verbatim}
+```
 
 ほかのデータセットを使って、さらに結果の精度を高めていきましょう。
-
-\begin{verbatim}
+```
 // JRCレイヤーを利用して、parmanent water(洪水に関わらず、常にある水)を検出する。
       var swater = ee.Image('JRC/GSW1_0/GlobalSurfaceWater').select('seasonality');
       var swater_mask = swater.gte(10).updateMask(swater.gte(10));　
@@ -291,14 +209,16 @@ var difference_binary = difference.gt(threshold);
       var terrain = ee.Algorithms.Terrain(DEM);
       var slope = terrain.select('slope');
       var flooded = flooded.updateMask(slope.lt(5));
-\end{verbatim}
+```
 
-\hypertarget{ux6d2aux6c34ux88abux5bb3ux3092ux53d7ux3051ux305fux30d4ux30afux30bbux30ebux306eux9762ux7a4dux3092ux96c6ux8a08}{%
-\section{洪水被害を受けたピクセルの面積を集計}\label{ux6d2aux6c34ux88abux5bb3ux3092ux53d7ux3051ux305fux30d4ux30afux30bbux30ebux306eux9762ux7a4dux3092ux96c6ux8a08}}
+
+
+
+## 洪水被害を受けたピクセルの面積を集計
 
 最終的な洪水面積を計算しましょう。
 
-\begin{verbatim}
+```
 // それぞれのピクセルの地域情報を含んだラスターレイヤーを作成 
 var flood_pixelarea = flooded.select(polarization)
   .multiply(ee.Image.pixelArea());
@@ -317,36 +237,37 @@ var flood_area_ha = flood_stats
   .getNumber(polarization)
   .divide(10000)
   .round(); 
-\end{verbatim}
 
-\hypertarget{ux88abux5bb3ux8a55ux4fa1}{%
-\chapter{被害評価　　}\label{ux88abux5bb3ux8a55ux4fa1}}
+```
+
+<!--chapter:end:03-method.Rmd-->
+
+# 被害評価　　
 
 この章では、各ピクセルにおける被害状況を算出する方法を説明します。
 
-``Estimated number of exposed people''：洪水の影響を受けた推定人口
+"Estimated number of exposed people"：洪水の影響を受けた推定人口
 
-``Estimated affected cropland''：影響を受けた耕作地の推定面積　　
+"Estimated affected cropland"：影響を受けた耕作地の推定面積　　
 
-``Estimated affected urban area''：影響を受けた都市の推定面積
+"Estimated affected urban area"：影響を受けた都市の推定面積
 
-\hypertarget{estimated-number-of-exposed-people}{%
-\section{``Estimated number of exposed people''}\label{estimated-number-of-exposed-people}}
 
-JRC Global Human Settlement Popluation Density layerを利用して、洪水の影響を受けた人口を算出します。
+## "Estimated number of exposed people"
 
-JRC Global Human Settlement Popluation Density layer：参照期間（1975年、1990年、2000年、2015年）の人口分布と密度を、1セルあたりの人口数で表したもの　　
+JRC Global Human Settlement Popluation Density layerを利用して、洪水の影響を受けた人口を算出します。  
 
-\begin{verbatim}
+<b>JRC Global Human Settlement Popluation Density layer</b>：参照期間（1975年、1990年、2000年、2015年）の人口分布と密度を、1セルあたりの人口数で表したもの　　
+
+```
 // JRCレイヤー(JRC Global Human Settlement Popluation Density layer)をロードする
 Resolution: 250. 　//１セル当たりの人口
 var population_count = ee.Image('JRC/GHSL/P2016/POP_GPW_GLOBE_V1/2015').clip(aoi);
-\end{verbatim}
+```
 
-\hypertarget{ux88abux5bb3ux4ebaux53e3ux3092ux7b97ux51faux3059ux308b}{%
-\subsection{被害人口を算出する}\label{ux88abux5bb3ux4ebaux53e3ux3092ux7b97ux51faux3059ux308b}}
+### 被害人口を算出する
 
-\begin{verbatim}
+```
 // GHSL(the Global Human Settlement Layer))を投影させる
 var GHSLprojection = population_count.projection();
 
@@ -371,12 +292,11 @@ var stats = population_exposed.reduceRegion({
 
 // 被害人口を整数値で算出する
 var number_pp_exposed = stats.getNumber('population_count').round();
-\end{verbatim}
+```
 
-\hypertarget{estimated-affected-cropland}{%
-\section{``Estimated affected cropland''}\label{estimated-affected-cropland}}
+##  "Estimated affected cropland" 
 
-\begin{verbatim}
+```
 // MODIS Land Cover Type Yearly Global 500mを使用する
 // 最新の土地被覆データ(MODIS)をフィルターにかける 
 var LC = ee.ImageCollection('MODIS/006/MCD12Q1')
@@ -424,14 +344,14 @@ var crop_area_ha = crop_stats
   .getNumber(polarization)
   .divide(10000)
   .round();
-\end{verbatim}
+```
 
-\hypertarget{estimated-affected-urban-area}{%
-\section{``Estimated affected urban area''}\label{estimated-affected-urban-area}}
+
+##  "Estimated affected urban area"
 
 同様にして都市部についても算出します。
 
-\begin{verbatim}
+```
 // MODIS Land Coverを使用する 
 // 都市エリアをフィルターにかける
 var urbanmask = LC.eq(13)
@@ -460,19 +380,18 @@ var urban_area_ha = urban_stats
   .getNumber('LC_Type1')
   .divide(10000)
   .round();
-\end{verbatim}
+```
 
-\hypertarget{ux30d7ux30edux30c0ux30afux30c8ux306eux51faux529b}{%
-\chapter{プロダクトの出力}\label{ux30d7ux30edux30c0ux30afux30c8ux306eux51faux529b}}
+<!--chapter:end:04-application.Rmd-->
 
-前章までに利用・作成したレイヤーをMap上に表示してみましょう。
+# プロダクトの出力
 
-\hypertarget{ux30ecux30a4ux30e4ux30fcux3092mapux4e0aux306bux8868ux793aux3059ux308b}{%
-\section{レイヤーをMap上に表示する　　}\label{ux30ecux30a4ux30e4ux30fcux3092mapux4e0aux306bux8868ux793aux3059ux308b}}
+前章までに利用・作成したレイヤーをMap上に表示してみましょう。  
+
+## レイヤーをMap上に表示する　　
 
 人口密度や被害人口等は、各値における色を自由に設定することができます。
-
-\begin{verbatim}
+```
 // Before and after flood SAR mosaic
 Map.centerObject(aoi,8);
 Map.addLayer(before_filtered, {min:-25,max:0}, 'Before Flood',0);
@@ -533,14 +452,12 @@ Map.addLayer(urban, urbanVis, 'Urban',0)
 
 // Affected urban
 Map.addLayer(urban_affected, urbanVis, 'Affected Urban'); 
-\end{verbatim}
+```
 
-\hypertarget{tiffux5f62ux5f0fux3067googleux30c9ux30e9ux30a4ux30d6ux306bux51faux529bux3059ux308b}{%
-\section{TIFF形式で、Googleドライブに出力する}\label{tiffux5f62ux5f0fux3067googleux30c9ux30e9ux30a4ux30d6ux306bux51faux529bux3059ux308b}}
+## TIFF形式で、Googleドライブに出力する  
 
 それでは,結果をGoogleドライブに出力していきましょう。Google earth engineで作成したファイルは、Googleドライブに出力されます。
-
-\begin{verbatim}
+```
 
 // TIFFファイル形式で出力 
 Export.image.toDrive({
@@ -579,28 +496,21 @@ Export.image.toDrive({
   region: aoi,
   maxPixels:1e10
 });
-\end{verbatim}
+```
 
-\hypertarget{ux7d50ux679cux306eux8868ux793a}{%
-\chapter{結果の表示}\label{ux7d50ux679cux306eux8868ux793a}}
+<!--chapter:end:05-summary.Rmd-->
+
+# 結果の表示  
 
 マップ上に表示する方法について説明します。
 
-\hypertarget{ux5730ux56f3ux4e0aux306bux7d50ux679cux3092ux8868ux793aux3059ux308bux2460}{%
-\section{地図上に結果を表示する①}\label{ux5730ux56f3ux4e0aux306bux7d50ux679cux3092ux8868ux793aux3059ux308bux2460}}
+## 地図上に結果を表示する① 
+![パネル表示①](images/example1.png)
 
-\begin{figure}
-\centering
-\includegraphics{images/example1.png}
-\caption{パネル表示①}
-\end{figure}
-
-\hypertarget{ux7d50ux679cux3092ux8868ux793aux3059ux308bux30d1ux30cdux30ebux306eux4f4dux7f6eux3092ux8a2dux5b9aux3059ux308b}{%
-\subsection{結果を表示するパネルの位置を設定する　　}\label{ux7d50ux679cux3092ux8868ux793aux3059ux308bux30d1ux30cdux30ebux306eux4f4dux7f6eux3092ux8a2dux5b9aux3059ux308b}}
+### 結果を表示するパネルの位置を設定する　　 
 
 位置や余白等を自分で好きなように設定することができます。
-
-\begin{verbatim}
+```
 var results = ui.Panel({
   style: {
     position: 'bottom-left',　　//位置
@@ -608,14 +518,12 @@ var results = ui.Panel({
     width: '350px'　　　　　　　//幅
   }
 });
-\end{verbatim}
+```
 
-\hypertarget{ux30d1ux30cdux30ebux306eux8868ux793aux5f62ux5f0fux6587ux5b57ux3084ux4f59ux767dux7b49ux3092ux8a2dux5b9aux3059ux308b}{%
-\subsection{パネルの表示形式(文字や余白等)を設定する}\label{ux30d1ux30cdux30ebux306eux8868ux793aux5f62ux5f0fux6587ux5b57ux3084ux4f59ux767dux7b49ux3092ux8a2dux5b9aux3059ux308b}}
+### パネルの表示形式(文字や余白等)を設定する 
 
 フォントや文字の太さ、色なども変更できます。
-
-\begin{verbatim}
+```
 var textVis = {
   'margin':'0px 8px 2px 0px',　　//余白
   'fontWeight':'bold'　　　　　　//フォントの太さ("normal"が標準、"bold"は太字)
@@ -637,12 +545,11 @@ var titleTextVis = {
   'font-weight':'', 
   'color': '3333ff'
   };
-\end{verbatim}
+```
 
-\hypertarget{ux7d50ux679cux306eux30e9ux30d9ux30ebux3092ux4f5cux6210ux3059ux308b}{%
-\subsection{結果のラベルを作成する}\label{ux7d50ux679cux306eux30e9ux30d9ux30ebux3092ux4f5cux6210ux3059ux308b}}
+### 結果のラベルを作成する 
 
-\begin{verbatim}
+```
 // タイトル
 var title = ui.Label('Results', titleTextVis);
 // "Flood status between"
@@ -683,12 +590,11 @@ var text6 = ui.Label
 
 // Produced by...
 var text7 = ui.Label('Script produced by: UN-SPIDER December 2019', subTextVis)
-\end{verbatim}
+```
 
-\hypertarget{ux30d1ux30cdux30ebux306bux30e9ux30d9ux30ebux3092ux52a0ux3048ux308b}{%
-\subsection{パネルにラベルを加える}\label{ux30d1ux30cdux30ebux306bux30e9ux30d9ux30ebux3092ux52a0ux3048ux308b}}
+### パネルにラベルを加える 
 
-\begin{verbatim}
+```
 results.add(ui.Panel([
         title,
         text1,
@@ -711,35 +617,28 @@ results.add(ui.Panel([
 
 // 地図にパネルを加える 
 Map.add(results);
-\end{verbatim}
+```
 
-\hypertarget{ux51e1ux4f8bux3092ux4f5cux6210ux3059ux308bux2461}{%
-\section{凡例を作成する②}\label{ux51e1ux4f8bux3092ux4f5cux6210ux3059ux308bux2461}}
+## 凡例を作成する②
+  
+![凡例②](images/example1.png)  
 
-\begin{figure}
-\centering
-\includegraphics{images/example1.png}
-\caption{凡例②}
-\end{figure}
 
-\hypertarget{ux30d1ux30cdux30ebux306eux4f4dux7f6eux3092ux8a2dux5b9aux3059ux308b}{%
-\subsection{パネルの位置を設定する}\label{ux30d1ux30cdux30ebux306eux4f4dux7f6eux3092ux8a2dux5b9aux3059ux308b}}
+### パネルの位置を設定する  
 
-\begin{verbatim}
+```
 var legend = ui.Panel({
   style: {
     position: 'bottom-right',
     padding: '8px 15px',
   }
 });
-\end{verbatim}
+```
 
-\hypertarget{ux5857ux5206ux3051ux306eux51e1ux4f8bux3092ux4f5cux6210ux3059ux308b}{%
-\subsection{塗分けの凡例を作成する}\label{ux5857ux5206ux3051ux306eux51e1ux4f8bux3092ux4f5cux6210ux3059ux308b}}
+### 塗分けの凡例を作成する
 
-(参考：\url{https://mygeoblog.com/2016/12/09/add-a-legend-to-to-your-gee-map/})
-
-\begin{verbatim}
+(参考：https://mygeoblog.com/2016/12/09/add-a-legend-to-to-your-gee-map/)
+```
 //凡例のタイトルを作成する
 var legendTitle = ui.Label('Legend',titleTextVis);
 
@@ -781,12 +680,11 @@ var names = ['potentially flooded areas','affected cropland','affected urban'];
 for (var i = 0; i < 3; i++) {
   legend.add(makeRow(palette[i], names[i]));
   }  
-\end{verbatim}
+```
 
-\hypertarget{exposed-population-densityux306eux51e1ux4f8bux3092ux4f5cux6210ux3059ux308b}{%
-\subsection{``Exposed population density''の凡例を作成する}\label{exposed-population-densityux306eux51e1ux4f8bux3092ux4f5cux6210ux3059ux308b}}
+### "Exposed population density"の凡例を作成する  
 
-\begin{verbatim}
+```
 var legendTitle2 = ui.Label({
 value: 'Exposed population density',
 style: {
@@ -804,12 +702,11 @@ legend.add(legendTitle2);
 var lon = ee.Image.pixelLonLat().select('latitude');
 var gradient = lon.multiply((populationExposedVis.max-populationExposedVis.min)/100.0).add(populationExposedVis.min);
 var legendImage = gradient.visualize(populationExposedVis);
-\end{verbatim}
+```
 
-\hypertarget{ux5730ux56f3ux4e0aux306bux51e1ux4f8bux3092ux8868ux793aux3059ux308b}{%
-\section{地図上に凡例を表示する}\label{ux5730ux56f3ux4e0aux306bux51e1ux4f8bux3092ux8868ux793aux3059ux308b}}
+##  地図上に凡例を表示する
 
-\begin{verbatim}
+```
 var panel = ui.Panel({
 widgets: [
 ui.Label('> '.concat(populationExposedVis['max']))
@@ -839,8 +736,10 @@ legend.add(panel);
  
 // 地図上に凡例を表示させる
 Map.add(legend);
-\end{verbatim}
+```
 
-  \bibliography{book.bib,packages.bib}
 
-\end{document}
+
+
+<!--chapter:end:06-references.Rmd-->
+

@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 2 データの選択と前処理 | GEE学習サイト</title>
+  <title>Chapter 1 コードを利用した洪水マップの作成 | GEE学習サイト</title>
   <meta name="description" content="GEEを活用して洪水被害図を作成してみましょう" />
   <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 2 データの選択と前処理 | GEE学習サイト" />
+  <meta property="og:title" content="Chapter 1 コードを利用した洪水マップの作成 | GEE学習サイト" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 2 データの選択と前処理 | GEE学習サイト" />
+  <meta name="twitter:title" content="Chapter 1 コードを利用した洪水マップの作成 | GEE学習サイト" />
   
   <meta name="twitter:description" content="GEEを活用して洪水被害図を作成してみましょう" />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="コードを利用した洪水マップの作成.html"/>
-<link rel="next" href="浸水範囲の算出.html"/>
+<link rel="prev" href="index.html"/>
+<link rel="next" href="データの選択と前処理.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -131,67 +131,40 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="データの選択と前処理" class="section level1">
-<h1><span class="header-section-number">Chapter 2</span> データの選択と前処理</h1>
-<p>まずはGoogle earth engineの画面について、見ていきましょう。Google earth engineの画面は、大きく分けて下のような3パートに分かれています。
-<img src="images/GEE.png" alt="GEE画面" />
-①Code　Editor：コードを入力する</p>
-<p>②</p>
-<p>Inspector：マップ上に配置されたオブジェクトを検索する</p>
-<p>Console：生成されたマップやメッセージ(printした結果)が表示される</p>
-<p>Tasks:タスクをエクスポートする。その際、ファイル形式や解像度を設定することが可能</p>
-<p>③Map：Code Editor(①)に入力したコードの結果等がGoogleMap上に表示される</p>
-<p>①Code editorに実行したいコードを入力し、【RUN】すると、②Consoleに結果が出力され、③Map上に表示されます。結果を保存したい場合には、Consoleから保存作業を行うと、自身のGoogle Drive上に結果が保存されるようになっています。</p>
-<div id="対象画像の選択出力と画像の前処理" class="section level2">
-<h2><span class="header-section-number">2.1</span> 対象画像の選択・出力と画像の前処理</h2>
-<p>それでは早速、コードの説明に入ります。。以下のコードは研究対象等によって変更することなく、そのまま使うことができます。</p>
-<pre><code>var aoi = ee.FeatureCollection(geometry);    //ジオメトリーの名称を&quot;aoi&quot;に変更する 
-
-// パラメーターを定義する前のSentinel-1 GRD(対象データ)をロードし、フィルターをかける 
-var collection= ee.ImageCollection(&#39;COPERNICUS/S1_GRD&#39;)
-  .filter(ee.Filter.eq(&#39;instrumentMode&#39;,&#39;IW&#39;))
-  .filter(ee.Filter.listContains(&#39;transmitterReceiverPolarisation&#39;, polarization))
-  .filter(ee.Filter.eq(&#39;orbitProperties_pass&#39;,pass_direction)) 
-  .filter(ee.Filter.eq(&#39;resolution_meters&#39;,10))
-  //.filter(ee.Filter.eq(&#39;relativeOrbitNumber_start&#39;,relative_orbit ))
-  .filterBounds(aoi)
-  .select(polarization);
-  
-// 画像を選択する
-var before_collection = collection.filterDate(before_start, before_end);
-var after_collection = collection.filterDate(after_start,after_end);
-
-// 選択したタイルをコンソールに出力する
-
-      // メタデータからデータを抽出する(メタデータ：：主となるデータの説明書きが書いてあるデータ)
-      function dates(imgcol){
-        var range = imgcol.reduceColumns(ee.Reducer.minMax(), [&quot;system:time_start&quot;]);
-        var printed = ee.String(&#39;from &#39;)
-          .cat(ee.Date(range.get(&#39;min&#39;)).format(&#39;YYYY-MM-dd&#39;))
-          .cat(&#39; to &#39;)
-          .cat(ee.Date(range.get(&#39;max&#39;)).format(&#39;YYYY-MM-dd&#39;));
-        return printed;
-      }
-      // コンソールに洪水前画像を出力する
-      var before_count = before_collection.size();
-      print(ee.String(&#39;Tiles selected: Before Flood &#39;).cat(&#39;(&#39;).cat(before_count).cat(&#39;)&#39;),
-        dates(before_collection), before_collection);
-      
-      // コンソールに洪水後画像を出力する
-      var after_count = before_collection.size();
-      print(ee.String(&#39;Tiles selected: After Flood &#39;).cat(&#39;(&#39;).cat(after_count).cat(&#39;)&#39;),
-        dates(after_collection), after_collection);
-
-// 選択したタイルにモザイクをかけ、対象エリアをクリップする
-var before = before_collection.mosaic().clip(aoi);
-var after = after_collection.mosaic().clip(aoi);
-
-// Smoothing  
-var smoothing_radius = 50;
-var before_filtered = before.focal_mean(smoothing_radius, &#39;circle&#39;, &#39;meters&#39;);
-var after_filtered = after.focal_mean(smoothing_radius, &#39;circle&#39;, &#39;meters&#39;);
-
-</code></pre>
+<div id="コードを利用した洪水マップの作成" class="section level1">
+<h1><span class="header-section-number">Chapter 1</span> コードを利用した洪水マップの作成</h1>
+<p>まずは以下のコードを自分の研究対象に書き換えてみましょう。
+(<a href="https://un-spider.org/advisory-support/recommended-practices/recommended-practice-google-earth-engine-flood-mapping/step-by-step" class="uri">https://un-spider.org/advisory-support/recommended-practices/recommended-practice-google-earth-engine-flood-mapping/step-by-step</a>)</p>
+<p>対象エリア、対象期間は以下の方法で変更することができます。</p>
+<div id="対象エリア" class="section level2">
+<h2><span class="header-section-number">1.1</span> 対象エリア</h2>
+<p>①地図上のツールバーの一番右(■)をクリックすると、研究対象エリアを四角形で囲むことができます。</p>
+<div class="figure">
+<img src="images/geepolygon1.png" alt="" />
+<p class="caption">GEE polygon1</p>
+</div>
+<p>②地図上のツールバーの右から2番目(5角形)をクリックすると、研究対象エリアにピンを立て、必要最低限のエリアを選択することが可能です。　　</p>
+<div class="figure">
+<img src="images/geepolygon2.png" alt="" />
+<p class="caption">GEE polygon2</p>
+</div>
+</div>
+<div id="対象期間" class="section level2">
+<h2><span class="header-section-number">1.2</span> 対象期間</h2>
+<p>洪水前後の日時(期間)を設定しましょう。　　</p>
+<p>＊使用するデータはSentinel-1で6日周期であることに留意。</p>
+</div>
+<div id="各種設定" class="section level2">
+<h2><span class="header-section-number">1.3</span> 各種設定　　</h2>
+<p>基本的にここのコードは変更せずに使います。。詳細な説明は省略しますが、対象地域等により、必要がある場合のみ変更して利用してみてください。</p>
+<pre><code>var polarization = &quot;VH&quot;; /*or &#39;VV&#39; </code></pre>
+<p>SARセンサは縦方向の電磁波を送信します。縦波を単一平面(偏波)で送信することが可能です。洪水マッピングでは、ほとんどの場合VHが好まれます。</p>
+<p>VH:垂直送信、水平受信</p>
+<p>VV:垂直送信、垂直受信</p>
+<pre><code>var pass_direction = &quot;DESCENDING&quot;; /* or &#39;ASCENDING&#39;</code></pre>
+<pre><code>var difference_threshold = 1.25;</code></pre>
+<p>差分画像に適用される閾値を定義します。</p>
+<pre><code>var relative_orbit = 79; </code></pre>
 
 </div>
 </div>
@@ -200,8 +173,8 @@ var after_filtered = after.focal_mean(smoothing_radius, &#39;circle&#39;, &#39;m
           </div>
         </div>
       </div>
-<a href="コードを利用した洪水マップの作成.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="浸水範囲の算出.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="データの選択と前処理.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

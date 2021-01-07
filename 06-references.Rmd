@@ -1,35 +1,39 @@
-# MAP PRODUCTION  
+# 結果の表示  
+
+マップ上に表示する方法について説明します。
 
 ## 地図上に結果を表示する① 
 ![パネル表示①](images/example1.png)
 
-### 結果が表示されるパネルの位置を設定する　　 
+### 結果を表示するパネルの位置を設定する　　 
 
+位置や余白等を自分で好きなように設定することができます。
 ```
 var results = ui.Panel({
   style: {
-    position: 'bottom-left',
-    padding: '8px 15px',
-    width: '350px'
+    position: 'bottom-left',　　//位置
+    padding: '8px 15px',　　　　//ボックス内の余白
+    width: '350px'　　　　　　　//幅
   }
 });
 ```
 
-### 表示形式を設定する 
+### パネルの表示形式(文字や余白等)を設定する 
 
+フォントや文字の太さ、色なども変更できます。
 ```
 var textVis = {
-  'margin':'0px 8px 2px 0px',
-  'fontWeight':'bold'
+  'margin':'0px 8px 2px 0px',　　//余白
+  'fontWeight':'bold'　　　　　　//フォントの太さ("normal"が標準、"bold"は太字)
   };
 var numberVIS = {
-  'margin':'0px 0px 15px 0px', 
-  'color':'bf0f19',
+  'margin':'0px 0px 15px 0px', 　
+  'color':'bf0f19',　　　　　　　//色
   'fontWeight':'bold'
   };
 var subTextVis = {
   'margin':'0px 0px 2px 0px',
-  'fontSize':'12px',
+  'fontSize':'12px',　　　　　　 //文字のサイズ
   'color':'grey'
   };
 
@@ -78,7 +82,7 @@ MODIS_date.evaluate(function(val){text5_2.setValue('based on MODIS Land Cover '+
 var number5 = ui.Label('Please wait...',numberVIS);
 urban_area_ha.evaluate(function(val){number5.setValue(val+' hectares')}),numberVIS;
 
-// 責任・権利利関連
+// 責任・権利関連
 var text6 = ui.Label
 ('Disclaimer: This product has been derived automatically without validation data. All geographic information has limitations due to the scale, resolution, date and interpretation of the original source materials. No liability concerning the content or the use thereof is assumed by the producer.',subTextVis)
 
@@ -114,7 +118,7 @@ Map.add(results);
 ```
 
 ## 凡例を作成する②
-(参考：https://mygeoblog.com/2016/12/09/add-a-legend-to-to-your-gee-map/)  
+  
 ![凡例②](images/example1.png)  
 
 
@@ -130,6 +134,8 @@ var legend = ui.Panel({
 ```
 
 ### 塗分けの凡例を作成する
+
+(参考：https://mygeoblog.com/2016/12/09/add-a-legend-to-to-your-gee-map/)
 ```
 //凡例のタイトルを作成する
 var legendTitle = ui.Label('Legend',titleTextVis);
@@ -144,7 +150,6 @@ var makeRow = function(color, name) {
       var colorBox = ui.Label({
         style: {
           backgroundColor: color,
-          // Use padding to give the box height and width.
           padding: '8px',
           margin: '0 0 4px 0'
         }
@@ -198,8 +203,8 @@ var legendImage = gradient.visualize(populationExposedVis);
 ```
 
 ##  地図上に凡例を表示する
+
 ```
-// 凡例の一番上に文章を作成する？
 var panel = ui.Panel({
 widgets: [
 ui.Label('> '.concat(populationExposedVis['max']))
@@ -218,7 +223,7 @@ style: {padding: '1px', position: 'bottom-center'}
 // 凡例にサムネイルをつける
 legend.add(thumbnail);
  
-// 凡例の一番上に文章を作成する？
+
 var panel = ui.Panel({
 widgets: [
 ui.Label(populationExposedVis['min'])
