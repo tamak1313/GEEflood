@@ -24,7 +24,7 @@
 <meta name="author" content="Tamaki.M" />
 
 
-<meta name="date" content="2021-01-07" />
+<meta name="date" content="2021-01-28" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -84,7 +84,7 @@
 </ul></li>
 <li class="chapter" data-level="3" data-path="浸水範囲の算出.html"><a href="浸水範囲の算出.html"><i class="fa fa-check"></i><b>3</b> 浸水範囲の算出</a><ul>
 <li class="chapter" data-level="3.1" data-path="浸水範囲の算出.html"><a href="浸水範囲の算出.html#洪水前後の画像を比較する"><i class="fa fa-check"></i><b>3.1</b> 洪水前後の画像を比較する　　</a></li>
-<li class="chapter" data-level="3.2" data-path="浸水範囲の算出.html"><a href="浸水範囲の算出.html#洪水被害を受けたピクセルの面積を集計"><i class="fa fa-check"></i><b>3.2</b> 洪水被害を受けたピクセルの面積を集計</a></li>
+<li class="chapter" data-level="3.2" data-path="浸水範囲の算出.html"><a href="浸水範囲の算出.html#浸水した地域の面積を算出"><i class="fa fa-check"></i><b>3.2</b> 浸水した地域の面積を算出</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="被害評価.html"><a href="被害評価.html"><i class="fa fa-check"></i><b>4</b> 被害評価　　</a><ul>
 <li class="chapter" data-level="4.1" data-path="被害評価.html"><a href="被害評価.html#estimated-number-of-exposed-people"><i class="fa fa-check"></i><b>4.1</b> “Estimated number of exposed people”</a><ul>
@@ -94,8 +94,7 @@
 <li class="chapter" data-level="4.3" data-path="被害評価.html"><a href="被害評価.html#estimated-affected-urban-area"><i class="fa fa-check"></i><b>4.3</b> “Estimated affected urban area”</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="プロダクトの出力.html"><a href="プロダクトの出力.html"><i class="fa fa-check"></i><b>5</b> プロダクトの出力</a><ul>
-<li class="chapter" data-level="5.1" data-path="プロダクトの出力.html"><a href="プロダクトの出力.html#レイヤーをmap上に表示する"><i class="fa fa-check"></i><b>5.1</b> レイヤーをMap上に表示する　　</a></li>
-<li class="chapter" data-level="5.2" data-path="プロダクトの出力.html"><a href="プロダクトの出力.html#tiff形式でgoogleドライブに出力する"><i class="fa fa-check"></i><b>5.2</b> TIFF形式で、Googleドライブに出力する</a></li>
+<li class="chapter" data-level="5.1" data-path="プロダクトの出力.html"><a href="プロダクトの出力.html#tiff形式でgoogleドライブに出力する"><i class="fa fa-check"></i><b>5.1</b> TIFF形式で、Googleドライブに出力する</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="結果の表示.html"><a href="結果の表示.html"><i class="fa fa-check"></i><b>6</b> 結果の表示</a><ul>
 <li class="chapter" data-level="6.1" data-path="結果の表示.html"><a href="結果の表示.html#地図上に結果を表示する①"><i class="fa fa-check"></i><b>6.1</b> 地図上に結果を表示する①</a><ul>
@@ -134,22 +133,31 @@
 <div id="被害評価" class="section level1">
 <h1><span class="header-section-number">Chapter 4</span> 被害評価　　</h1>
 <p>この章では、各ピクセルにおける被害状況を算出する方法を説明します。</p>
-<p>“Estimated number of exposed people”：洪水の影響を受けた推定人口</p>
-<p>“Estimated affected cropland”：影響を受けた耕作地の推定面積　　</p>
-<p>“Estimated affected urban area”：影響を受けた都市の推定面積</p>
+<p><b>“Estimated number of exposed people”</b>：洪水の影響を受けた推定人口</p>
+<p><b>“Estimated affected cropland”</b>：影響を受けた耕作地の推定面積　　</p>
+<p><b>“Estimated affected urban area”</b>：影響を受けた都市の推定面積</p>
+<p>＊マップ上の表示に当たって、着色をしていますが、自由に設定することができます。</p>
 <div id="estimated-number-of-exposed-people" class="section level2">
 <h2><span class="header-section-number">4.1</span> “Estimated number of exposed people”</h2>
 <p>JRC Global Human Settlement Popluation Density layerを利用して、洪水の影響を受けた人口を算出します。</p>
 <p><b>JRC Global Human Settlement Popluation Density layer</b>：参照期間（1975年、1990年、2000年、2015年）の人口分布と密度を、1セルあたりの人口数で表したもの　　</p>
 <pre><code>// JRCレイヤー(JRC Global Human Settlement Popluation Density layer)をロードする
-Resolution: 250. 　//１セル当たりの人口
+Resolution: 250. 　//分解能
 var population_count = ee.Image(&#39;JRC/GHSL/P2016/POP_GPW_GLOBE_V1/2015&#39;).clip(aoi);</code></pre>
+<p>JRCレイヤーによって算出した人口密度を表示してみましょう.首都ダッカに近いところほど白くなっていて、人口密度が高いことががわかります。</p>
+<pre><code>Map.addLayer(population_count, populationCountVis, &#39;Population Density&#39;,0);</code></pre>
+<div class="figure">
+<img src="images/population.png" alt="" />
+<p class="caption">population density</p>
+</div>
 <div id="被害人口を算出する" class="section level3">
 <h3><span class="header-section-number">4.1.1</span> 被害人口を算出する</h3>
-<pre><code>// GHSL(the Global Human Settlement Layer))を投影させる
+<pre><code>// GHSL(the Global Human Settlement Layer))を投影する
 var GHSLprojection = population_count.projection();
 
-// GHSLスケールに洪水レイヤーを再投影する
+// GHSLスケールに洪水レイヤーをリプロジェクトする
+リプロジェクト:座標系の変換操作
+
 var flooded_res1 = flooded
     .reproject({
     crs: GHSLprojection
@@ -158,53 +166,90 @@ var flooded_res1 = flooded
 // the resampled flood layerを使い、被害人口を示すレイヤーを作成する
 var population_exposed = population_count
   .updateMask(flooded_res1)
-  .updateMask(population_count);
-
-//被害人口ラスターのピクセルあたりの数値を計算する 
-var stats = population_exposed.reduceRegion({
+  .updateMask(population_count);</code></pre>
+<p>Exposed Populationを表示してみましょう。少し見づらいですが、先ほど表示した洪水浸水域の周辺に点描されていることがわかります。</p>
+<pre><code>var populationExposedVis = {
+  min: 0,
+  max: 200.0,
+  palette: [&#39;yellow&#39;, &#39;orange&#39;, &#39;red&#39;],
+};
+Map.addLayer(population_exposed, populationExposedVis, &#39;Exposed Population&#39;);</code></pre>
+<p><img src="images/exposedp.png" alt="exposed population" />
+被害人口ラスターのピクセルあたりの数値を計算します。</p>
+<pre><code>var stats = population_exposed.reduceRegion({
   reducer: ee.Reducer.sum(),
   geometry: aoi,
   scale: 250,
   maxPixels:1e9 
-});
-
-// 被害人口を整数値で算出する
-var number_pp_exposed = stats.getNumber(&#39;population_count&#39;).round();</code></pre>
+});</code></pre>
+<p>被害人口を整数値にします。</p>
+<pre><code>var number_pp_exposed = stats.getNumber(&#39;population_count&#39;).round();</code></pre>
 </div>
 </div>
 <div id="estimated-affected-cropland" class="section level2">
 <h2><span class="header-section-number">4.2</span> “Estimated affected cropland”</h2>
-<pre><code>// MODIS Land Cover Type Yearly Global 500mを使用する
-// 最新の土地被覆データ(MODIS)をフィルターにかける 
-var LC = ee.ImageCollection(&#39;MODIS/006/MCD12Q1&#39;)
+<p>まず、MODIS Land Coverをロードし、設定を行います。<br />
+今回はMODIS Land Cover Type Yearly Global 500mを使用します。</p>
+<pre><code>var LC = ee.ImageCollection(&#39;MODIS/006/MCD12Q1&#39;)
   .filterDate(&#39;2014-01-01&#39;,after_end) 　　//日時の設定
   .sort(&#39;system:index&#39;,false)　　　　　 　
   .select(&quot;LC_Type1&quot;)　　　　           　//Layersの指定
   .first()                                
-  .clip(aoi);　　　　　　　　           　//画像をジオメトリにクリップする
-
-// the classes cropland (&gt;60%) and Cropland/Natural である耕作地ピクセルだけを抽出する
-// 植生モザイク: mosaics of small-scale cultivation 40-60% incl. natural vegetation
-var cropmask = LC  
+  .clip(aoi);　　　　　　　　           　//画像をジオメトリにクリップする</code></pre>
+<p>MODIS Land Coverをマップ上に表示してみましょう。
+植生指数の値が小さければ小さいほど、植生がない/少ない(水や雪など)を表し、大きくなればなるほど豊かな植生(森林など)ということを示しています。以下の図の通り、豊かな植生を濃緑、植生がない/少ない地域を青で塗分けています。</p>
+<pre><code>var LCVis = {
+  min: 1.0,
+  max: 17.0,
+  palette: [
+    &#39;05450a&#39;, &#39;086a10&#39;, &#39;54a708&#39;, &#39;78d203&#39;, &#39;009900&#39;, &#39;c6b044&#39;, &#39;dcd159&#39;,
+    &#39;dade48&#39;, &#39;fbff13&#39;, &#39;b6ff05&#39;, &#39;27ff87&#39;, &#39;c24f44&#39;, &#39;a5a5a5&#39;, &#39;ff6d4c&#39;,
+    &#39;69fff8&#39;, &#39;f9ffa4&#39;, &#39;1c0dff&#39;
+  ],
+};
+Map.addLayer(LC, LCVis, &#39;Land Cover&#39;,0);</code></pre>
+<div class="figure">
+<img src="images/modis.png" alt="" />
+<p class="caption">MODIS</p>
+</div>
+<p>続いて、 the classes cropland (&gt;60%) and Cropland/Natural である耕作地だけを抽出してみましょう。</p>
+<pre><code>var cropmask = LC  
   .eq(12)          //与えられた値と等しいメタデータにフィルターをかける
   .or(LC.eq(14))　 
 var cropland = LC
-  .updateMask(cropmask)　//既存のマスクがゼロではないすべての位置で画像のマスクを更新。出力画像は入力画像のメタデータとフットプリントを保持する。
-  
-// MODISを投影させる
+  .updateMask(cropmask)　</code></pre>
+<p>croplandをマップ上に表示してみましょう。緑で着色された部分がCroplandとして検出された地域です。</p>
+<pre><code>var croplandVis = {
+  min: 0,
+  max: 14.0,
+  palette: [&#39;30b21c&#39;],
+};
+Map.addLayer(cropland, croplandVis, &#39;Cropland&#39;,0) </code></pre>
+<div class="figure">
+<img src="images/cropland.png" alt="" />
+<p class="caption">cropland</p>
+</div>
+<p>先ほど同様に、今度はAffected croplandを抽出してみましょう。</p>
+<pre><code>// MODISを投影させる
 var MODISprojection = LC.projection();
 
-// MODISスケールにflood layerを再投影する
+// MODISスケールにflood layerをリプロジェクトする
 var flooded_res = flooded
     .reproject({
     crs: MODISprojection
   });
 
-// the resampled flood layerを使って、耕作地への影響を算出する
+// the resampled flood layerを使って、Affected croplandを抽出する
 var cropland_affected = flooded_res
-  .updateMask(cropland)
-
-// affected cropland layerのピクセルを取得する
+  .updateMask(cropland)</code></pre>
+<p>Affected croplandをマップ上に表示してみましょう。</p>
+<pre><code>Map.addLayer(cropland_affected, croplandVis, &#39;Affected Cropland&#39;);</code></pre>
+<div class="figure">
+<img src="images/affected%20cropland.png" alt="" />
+<p class="caption">affected cropland</p>
+</div>
+<p>耕作地における浸水被害面積を算出します。</p>
+<pre><code>// affected cropland layerのピクセルを取得する
 var crop_pixelarea = cropland_affected
   .multiply(ee.Image.pixelArea()); //calcuate the area of each pixel 
 
@@ -224,19 +269,34 @@ var crop_area_ha = crop_stats
 </div>
 <div id="estimated-affected-urban-area" class="section level2">
 <h2><span class="header-section-number">4.3</span> “Estimated affected urban area”</h2>
-<p>同様にして都市部についても算出します。</p>
-<pre><code>// MODIS Land Coverを使用する 
-// 都市エリアをフィルターにかける
+<p>同様に都市部についても浸水被害地域を抽出し、被害面積を算出します。</p>
+<pre><code>// 都市エリアをフィルターにかける
 var urbanmask = LC.eq(13)
 var urban = LC
-  .updateMask(urbanmask)
-
-//the resampled flood layerを使って、影響を受けた都市部を算出する
-var urban_affected = urban
+  .updateMask(urbanmask)</code></pre>
+<p>Urbanをマップ上に表示してみましょう。都市部のバングラデシュ・ダッカやインド・コルカタ周辺が黄色く着色されています。</p>
+<pre><code>var urbanVis = {
+  min: 0,
+  max: 13.0,
+  palette: [&#39;yellow&#39;],
+};
+Map.addLayer(urban, urbanVis, &#39;Urban&#39;,0)</code></pre>
+<div class="figure">
+<img src="images/urban.png" alt="" />
+<p class="caption">urban</p>
+</div>
+<p>the resampled flood layerを使って、Affected urbanを抽出します。</p>
+<pre><code>var urban_affected = urban
   .mask(flooded_res)
-  .updateMask(urban);
-
-// affected urban layerのピクセルを取得する
+  .updateMask(urban);</code></pre>
+<p>affected urbanをマップ上に表示してみましょう。</p>
+<pre><code>Map.addLayer(urban_affected, urbanVis, &#39;Affected Urban&#39;);</code></pre>
+<div class="figure">
+<img src="images/affected%20urban.png" alt="" />
+<p class="caption">affected urban</p>
+</div>
+<p>最後に、都市部における浸水被害面積を算出します。</p>
+<pre><code>// affected urban layerのピクセルを取得する
 var urban_pixelarea = urban_affected
   .multiply(ee.Image.pixelArea()); //calcuate the area of each pixel 
 

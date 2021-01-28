@@ -12,9 +12,9 @@ description: "GEEを活用して洪水被害図を作成してみましょう"
 
 # 初めに {-}
 
-このサイトは、Google earth engineを活用して洪水被害図を作成する方法について詳細に紹介します。衛星データから自分が必要とするデータを作成したい、Google earth engine初心者の方を想定し、このサイトを読めば　　
+このサイトは、Google earth engineを活用して洪水による浸水被害範囲図を作成する方法について、UN Spiderが提供しているコードにのっとって説明をしています。ただし、本記事では説明のため、UN spiderのコードとは順番を入れ替えている部分があります。  
 
-UN Spiderが提供しているコードにのっとって説明をしています。元のサイトは、以下のURLからら確認できます。
+元のサイトは、以下のURLから確認できます。
 (https://un-spider.org/advisory-support/recommended-practices/recommended-practice-google-earth-engine-flood-mapping/step-by-step)
 
 コードを詳しく知る前に、まずはどのようなものが出来上がるのか確認したいという方は、以下のサイトに従って作成してみてください。
@@ -28,5 +28,6 @@ UN Spiderが提供しているコードにのっとって説明をしていま�
 
 ## 作業環境
 
-2020年12月現在
+2020年12月現在  
+
 Windows 10 64bit

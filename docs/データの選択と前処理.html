@@ -24,7 +24,7 @@
 <meta name="author" content="Tamaki.M" />
 
 
-<meta name="date" content="2021-01-07" />
+<meta name="date" content="2021-01-28" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -84,7 +84,7 @@
 </ul></li>
 <li class="chapter" data-level="3" data-path="浸水範囲の算出.html"><a href="浸水範囲の算出.html"><i class="fa fa-check"></i><b>3</b> 浸水範囲の算出</a><ul>
 <li class="chapter" data-level="3.1" data-path="浸水範囲の算出.html"><a href="浸水範囲の算出.html#洪水前後の画像を比較する"><i class="fa fa-check"></i><b>3.1</b> 洪水前後の画像を比較する　　</a></li>
-<li class="chapter" data-level="3.2" data-path="浸水範囲の算出.html"><a href="浸水範囲の算出.html#洪水被害を受けたピクセルの面積を集計"><i class="fa fa-check"></i><b>3.2</b> 洪水被害を受けたピクセルの面積を集計</a></li>
+<li class="chapter" data-level="3.2" data-path="浸水範囲の算出.html"><a href="浸水範囲の算出.html#浸水した地域の面積を算出"><i class="fa fa-check"></i><b>3.2</b> 浸水した地域の面積を算出</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="被害評価.html"><a href="被害評価.html"><i class="fa fa-check"></i><b>4</b> 被害評価　　</a><ul>
 <li class="chapter" data-level="4.1" data-path="被害評価.html"><a href="被害評価.html#estimated-number-of-exposed-people"><i class="fa fa-check"></i><b>4.1</b> “Estimated number of exposed people”</a><ul>
@@ -94,8 +94,7 @@
 <li class="chapter" data-level="4.3" data-path="被害評価.html"><a href="被害評価.html#estimated-affected-urban-area"><i class="fa fa-check"></i><b>4.3</b> “Estimated affected urban area”</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="プロダクトの出力.html"><a href="プロダクトの出力.html"><i class="fa fa-check"></i><b>5</b> プロダクトの出力</a><ul>
-<li class="chapter" data-level="5.1" data-path="プロダクトの出力.html"><a href="プロダクトの出力.html#レイヤーをmap上に表示する"><i class="fa fa-check"></i><b>5.1</b> レイヤーをMap上に表示する　　</a></li>
-<li class="chapter" data-level="5.2" data-path="プロダクトの出力.html"><a href="プロダクトの出力.html#tiff形式でgoogleドライブに出力する"><i class="fa fa-check"></i><b>5.2</b> TIFF形式で、Googleドライブに出力する</a></li>
+<li class="chapter" data-level="5.1" data-path="プロダクトの出力.html"><a href="プロダクトの出力.html#tiff形式でgoogleドライブに出力する"><i class="fa fa-check"></i><b>5.1</b> TIFF形式で、Googleドライブに出力する</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="結果の表示.html"><a href="結果の表示.html"><i class="fa fa-check"></i><b>6</b> 結果の表示</a><ul>
 <li class="chapter" data-level="6.1" data-path="結果の表示.html"><a href="結果の表示.html#地図上に結果を表示する①"><i class="fa fa-check"></i><b>6.1</b> 地図上に結果を表示する①</a><ul>
@@ -133,37 +132,43 @@
             <section class="normal" id="section-">
 <div id="データの選択と前処理" class="section level1">
 <h1><span class="header-section-number">Chapter 2</span> データの選択と前処理</h1>
-<p>まずはGoogle earth engineの画面について、見ていきましょう。Google earth engineの画面は、大きく分けて下のような3パートに分かれています。
+<p>まずはGoogle earth engineの画面を見てみましょう。<br />
+Google earth engineの画面は、大きく分けて以下の3パートに分かれています。
 <img src="images/GEE.png" alt="GEE画面" />
-①Code　Editor：コードを入力する</p>
-<p>②</p>
-<p>Inspector：マップ上に配置されたオブジェクトを検索する</p>
-<p>Console：生成されたマップやメッセージ(printした結果)が表示される</p>
-<p>Tasks:タスクをエクスポートする。その際、ファイル形式や解像度を設定することが可能</p>
-<p>③Map：Code Editor(①)に入力したコードの結果等がGoogleMap上に表示される</p>
-<p>①Code editorに実行したいコードを入力し、【RUN】すると、②Consoleに結果が出力され、③Map上に表示されます。結果を保存したい場合には、Consoleから保存作業を行うと、自身のGoogle Drive上に結果が保存されるようになっています。</p>
+①<br />
+<b>Code　Editor</b>：コードを入力する</p>
+<p>②<br />
+<b>Inspector</b>：マップ上に配置されたオブジェクトを検索する</p>
+<p><b>Console</b>：生成されたマップやメッセージ(printした結果)が表示される</p>
+<p><b>Tasks</b>:タスクをエクスポートする。その際、ファイル形式や解像度を設定することが可能</p>
+<p>③<br />
+<b>Map</b>：<b>Code Editor</b>に入力したコードの結果等がGoogle Map上に表示される</p>
+<p><b>Code editor</b>に実行したいコードを入力し、【RUN】すると、<b>Console</b>に結果が出力され、<b>Map</b>上に表示されます。結果を保存したい場合には、<b>Console</b>から保存作業を行うと、自身のGoogle Drive上に結果が保存されるようになっています。</p>
 <div id="対象画像の選択出力と画像の前処理" class="section level2">
 <h2><span class="header-section-number">2.1</span> 対象画像の選択・出力と画像の前処理</h2>
-<p>それでは早速、コードの説明に入ります。。以下のコードは研究対象等によって変更することなく、そのまま使うことができます。</p>
-<pre><code>var aoi = ee.FeatureCollection(geometry);    //ジオメトリーの名称を&quot;aoi&quot;に変更する 
+<p>まずは、<b>使用する画像の選択と画像の前処理</b>を行います。<br />
+本記事では簡単のため、画像の前処理についての詳細な説明は省略しますが、以下のコードは研究対象等によって変更することなく、そのまま使うことができます。</p>
+<pre><code>//ジオメトリーの名称を&quot;aoi&quot;に変更する 
+var aoi = ee.FeatureCollection(geometry);    
 
-// パラメーターを定義する前のSentinel-1 GRD(対象データ)をロードし、フィルターをかける 
+// パラメーターを定義する前のSentinel-1 GRD(対象データ)をロードする
 var collection= ee.ImageCollection(&#39;COPERNICUS/S1_GRD&#39;)
+
+　//データの前処理
   .filter(ee.Filter.eq(&#39;instrumentMode&#39;,&#39;IW&#39;))
   .filter(ee.Filter.listContains(&#39;transmitterReceiverPolarisation&#39;, polarization))
   .filter(ee.Filter.eq(&#39;orbitProperties_pass&#39;,pass_direction)) 
   .filter(ee.Filter.eq(&#39;resolution_meters&#39;,10))
   //.filter(ee.Filter.eq(&#39;relativeOrbitNumber_start&#39;,relative_orbit ))
   .filterBounds(aoi)
-  .select(polarization);
-  
-// 画像を選択する
+  .select(polarization);</code></pre>
+<p>第1章で設定した対象期間をもとに、データの中から必要な画像を取得しましょう。その後Consoleに出力し、Smoothingと呼ばれる処理を行います。</p>
+<pre><code>//対象期間のデータを選択する
 var before_collection = collection.filterDate(before_start, before_end);
-var after_collection = collection.filterDate(after_start,after_end);
-
-// 選択したタイルをコンソールに出力する
-
-      // メタデータからデータを抽出する(メタデータ：：主となるデータの説明書きが書いてあるデータ)
+var after_collection = collection.filterDate(after_start,after_end);</code></pre>
+<p>Consoleに選択したデータを出力します。</p>
+<pre><code>//メタデータからデータを抽出する
+  メタデータ：：主となるデータの説明書きが書いてあるデータ
       function dates(imgcol){
         var range = imgcol.reduceColumns(ee.Reducer.minMax(), [&quot;system:time_start&quot;]);
         var printed = ee.String(&#39;from &#39;)
@@ -172,26 +177,42 @@ var after_collection = collection.filterDate(after_start,after_end);
           .cat(ee.Date(range.get(&#39;max&#39;)).format(&#39;YYYY-MM-dd&#39;));
         return printed;
       }
-      // コンソールに洪水前画像を出力する
+      //Consoleに洪水前画像を出力する
       var before_count = before_collection.size();
       print(ee.String(&#39;Tiles selected: Before Flood &#39;).cat(&#39;(&#39;).cat(before_count).cat(&#39;)&#39;),
         dates(before_collection), before_collection);
       
-      // コンソールに洪水後画像を出力する
+      //Consoleに洪水後画像を出力する
       var after_count = before_collection.size();
       print(ee.String(&#39;Tiles selected: After Flood &#39;).cat(&#39;(&#39;).cat(after_count).cat(&#39;)&#39;),
-        dates(after_collection), after_collection);
+        dates(after_collection), after_collection);</code></pre>
+<p>画像の前処理を行います。</p>
+<pre><code>// 選択したタイルにモザイクをかけ、対象エリアをクリップする
+クリップ：画像の指定した一部分のみを表示したり、その部分だけを切り抜いて残し、他の部分を消去する処理や操作
 
-// 選択したタイルにモザイクをかけ、対象エリアをクリップする
 var before = before_collection.mosaic().clip(aoi);
 var after = after_collection.mosaic().clip(aoi);
 
-// Smoothing  
+// Smoothing
+Smoothing：時系列データはノイズを低減するために均す作業
+
 var smoothing_radius = 50;
 var before_filtered = before.focal_mean(smoothing_radius, &#39;circle&#39;, &#39;meters&#39;);
 var after_filtered = after.focal_mean(smoothing_radius, &#39;circle&#39;, &#39;meters&#39;);
-
 </code></pre>
+<p>以上の操作で生成された、洪水前(1枚目)、洪水後(2枚目)の画像をマップ上に表示してみましょう。マップ上に表示するためのコードは以下の通りです。</p>
+<pre><code>Map.centerObject(aoi,8);
+Map.addLayer(before_filtered, {min:-25,max:0}, &#39;Before Flood&#39;,0);
+Map.addLayer(after_filtered, {min:-25,max:0}, &#39;After Flood&#39;,1);</code></pre>
+<div class="figure">
+<img src="images/flood1.png" alt="" />
+<p class="caption">洪水前</p>
+</div>
+<div class="figure">
+<img src="images/flood2.png" alt="" />
+<p class="caption">洪水後</p>
+</div>
+<p>2枚を比較して見ると、洪水前後で少し違いが見られますね。次の章からは、別のデータセットを追加し、実際に洪水による浸水域を検出していきます。</p>
 
 </div>
 </div>

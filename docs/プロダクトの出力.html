@@ -24,7 +24,7 @@
 <meta name="author" content="Tamaki.M" />
 
 
-<meta name="date" content="2021-01-07" />
+<meta name="date" content="2021-01-28" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -84,7 +84,7 @@
 </ul></li>
 <li class="chapter" data-level="3" data-path="浸水範囲の算出.html"><a href="浸水範囲の算出.html"><i class="fa fa-check"></i><b>3</b> 浸水範囲の算出</a><ul>
 <li class="chapter" data-level="3.1" data-path="浸水範囲の算出.html"><a href="浸水範囲の算出.html#洪水前後の画像を比較する"><i class="fa fa-check"></i><b>3.1</b> 洪水前後の画像を比較する　　</a></li>
-<li class="chapter" data-level="3.2" data-path="浸水範囲の算出.html"><a href="浸水範囲の算出.html#洪水被害を受けたピクセルの面積を集計"><i class="fa fa-check"></i><b>3.2</b> 洪水被害を受けたピクセルの面積を集計</a></li>
+<li class="chapter" data-level="3.2" data-path="浸水範囲の算出.html"><a href="浸水範囲の算出.html#浸水した地域の面積を算出"><i class="fa fa-check"></i><b>3.2</b> 浸水した地域の面積を算出</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="被害評価.html"><a href="被害評価.html"><i class="fa fa-check"></i><b>4</b> 被害評価　　</a><ul>
 <li class="chapter" data-level="4.1" data-path="被害評価.html"><a href="被害評価.html#estimated-number-of-exposed-people"><i class="fa fa-check"></i><b>4.1</b> “Estimated number of exposed people”</a><ul>
@@ -94,8 +94,7 @@
 <li class="chapter" data-level="4.3" data-path="被害評価.html"><a href="被害評価.html#estimated-affected-urban-area"><i class="fa fa-check"></i><b>4.3</b> “Estimated affected urban area”</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="プロダクトの出力.html"><a href="プロダクトの出力.html"><i class="fa fa-check"></i><b>5</b> プロダクトの出力</a><ul>
-<li class="chapter" data-level="5.1" data-path="プロダクトの出力.html"><a href="プロダクトの出力.html#レイヤーをmap上に表示する"><i class="fa fa-check"></i><b>5.1</b> レイヤーをMap上に表示する　　</a></li>
-<li class="chapter" data-level="5.2" data-path="プロダクトの出力.html"><a href="プロダクトの出力.html#tiff形式でgoogleドライブに出力する"><i class="fa fa-check"></i><b>5.2</b> TIFF形式で、Googleドライブに出力する</a></li>
+<li class="chapter" data-level="5.1" data-path="プロダクトの出力.html"><a href="プロダクトの出力.html#tiff形式でgoogleドライブに出力する"><i class="fa fa-check"></i><b>5.1</b> TIFF形式で、Googleドライブに出力する</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="結果の表示.html"><a href="結果の表示.html"><i class="fa fa-check"></i><b>6</b> 結果の表示</a><ul>
 <li class="chapter" data-level="6.1" data-path="結果の表示.html"><a href="結果の表示.html#地図上に結果を表示する①"><i class="fa fa-check"></i><b>6.1</b> 地図上に結果を表示する①</a><ul>
@@ -133,105 +132,35 @@
             <section class="normal" id="section-">
 <div id="プロダクトの出力" class="section level1">
 <h1><span class="header-section-number">Chapter 5</span> プロダクトの出力</h1>
-<p>前章までに利用・作成したレイヤーをMap上に表示してみましょう。</p>
-<div id="レイヤーをmap上に表示する" class="section level2">
-<h2><span class="header-section-number">5.1</span> レイヤーをMap上に表示する　　</h2>
-<p>人口密度や被害人口等は、各値における色を自由に設定することができます。</p>
-<pre><code>// Before and after flood SAR mosaic
-Map.centerObject(aoi,8);
-Map.addLayer(before_filtered, {min:-25,max:0}, &#39;Before Flood&#39;,0);
-Map.addLayer(after_filtered, {min:-25,max:0}, &#39;After Flood&#39;,1);
-
-// Difference layer
-Map.addLayer(difference,{min:0,max:2},&quot;Difference Layer&quot;,0);
-
-// Flooded areas
-Map.addLayer(flooded,{palette:&quot;0000FF&quot;},&#39;Flooded areas&#39;);
-
-// Population Density
-var populationCountVis = {
-  min: 0,
-  max: 200.0,
-  palette: [&#39;060606&#39;,&#39;337663&#39;,&#39;337663&#39;,&#39;ffffff&#39;],
-};
-Map.addLayer(population_count, populationCountVis, &#39;Population Density&#39;,0);
-
-// Exposed Population
-var populationExposedVis = {
-  min: 0,
-  max: 200.0,
-  palette: [&#39;yellow&#39;, &#39;orange&#39;, &#39;red&#39;],
-};
-Map.addLayer(population_exposed, populationExposedVis, &#39;Exposed Population&#39;);
-
-// MODIS Land Cover
-var LCVis = {
-  min: 1.0,
-  max: 17.0,
-  palette: [
-    &#39;05450a&#39;, &#39;086a10&#39;, &#39;54a708&#39;, &#39;78d203&#39;, &#39;009900&#39;, &#39;c6b044&#39;, &#39;dcd159&#39;,
-    &#39;dade48&#39;, &#39;fbff13&#39;, &#39;b6ff05&#39;, &#39;27ff87&#39;, &#39;c24f44&#39;, &#39;a5a5a5&#39;, &#39;ff6d4c&#39;,
-    &#39;69fff8&#39;, &#39;f9ffa4&#39;, &#39;1c0dff&#39;
-  ],
-};
-Map.addLayer(LC, LCVis, &#39;Land Cover&#39;,0);
-
-// Cropland
-var croplandVis = {
-  min: 0,
-  max: 14.0,
-  palette: [&#39;30b21c&#39;],
-};
-Map.addLayer(cropland, croplandVis, &#39;Cropland&#39;,0)
-
-// Affected cropland
-Map.addLayer(cropland_affected, croplandVis, &#39;Affected Cropland&#39;); 
-
-// Urban
-var urbanVis = {
-  min: 0,
-  max: 13.0,
-  palette: [&#39;grey&#39;],
-};
-Map.addLayer(urban, urbanVis, &#39;Urban&#39;,0)
-
-// Affected urban
-Map.addLayer(urban_affected, urbanVis, &#39;Affected Urban&#39;); </code></pre>
-</div>
 <div id="tiff形式でgoogleドライブに出力する" class="section level2">
-<h2><span class="header-section-number">5.2</span> TIFF形式で、Googleドライブに出力する</h2>
+<h2><span class="header-section-number">5.1</span> TIFF形式で、Googleドライブに出力する</h2>
 <p>それでは,結果をGoogleドライブに出力していきましょう。Google earth engineで作成したファイルは、Googleドライブに出力されます。</p>
-<pre><code>
-// TIFFファイル形式で出力 
-Export.image.toDrive({
+<p>TIFFファイル形式で出力します。</p>
+<pre><code>Export.image.toDrive({
   image: flooded, 
   description: &#39;Flood_extent_raster&#39;,
   fileNamePrefix: &#39;flooded&#39;,
   region: aoi, 
   maxPixels: 1e10
-});
-
-// Export flooded area as shapefile (for further analysis in e.g. QGIS)
-// flood rasterをポリゴンに転換する
-var flooded_vec = flooded.reduceToVectors({
+});</code></pre>
+<p>flood rasterをポリゴンに変換し、flooded areaをシェイプファイル形式で出力します。</p>
+<pre><code>var flooded_vec = flooded.reduceToVectors({
   scale: 10,
   geometryType:&#39;polygon&#39;,
   geometry: aoi,
   eightConnected: false,
   bestEffort:true,
   tileScale:2,
-});
-
-// flood polygonsをシェープファイルとして出力する
-Export.table.toDrive({
+});</code></pre>
+<p>flood polygonsをシェイプファイルとして出力します。</p>
+<pre><code>Export.table.toDrive({
   collection:flooded_vec,
   description:&#39;Flood_extent_vector&#39;,
   fileFormat:&#39;SHP&#39;,
   fileNamePrefix:&#39;flooded_vec&#39;
-});
-
-// Exposed population density
-Export.image.toDrive({
+});</code></pre>
+<p>Exposed population densityの画像を出力します。</p>
+<pre><code>Export.image.toDrive({
   image:population_exposed,
   description:&#39;Exposed_Populuation&#39;,
   scale: 250,

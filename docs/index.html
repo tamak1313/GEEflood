@@ -24,7 +24,7 @@
 <meta name="author" content="Tamaki.M" />
 
 
-<meta name="date" content="2021-01-07" />
+<meta name="date" content="2021-01-28" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -84,7 +84,7 @@
 </ul></li>
 <li class="chapter" data-level="3" data-path="浸水範囲の算出.html"><a href="浸水範囲の算出.html"><i class="fa fa-check"></i><b>3</b> 浸水範囲の算出</a><ul>
 <li class="chapter" data-level="3.1" data-path="浸水範囲の算出.html"><a href="浸水範囲の算出.html#洪水前後の画像を比較する"><i class="fa fa-check"></i><b>3.1</b> 洪水前後の画像を比較する　　</a></li>
-<li class="chapter" data-level="3.2" data-path="浸水範囲の算出.html"><a href="浸水範囲の算出.html#洪水被害を受けたピクセルの面積を集計"><i class="fa fa-check"></i><b>3.2</b> 洪水被害を受けたピクセルの面積を集計</a></li>
+<li class="chapter" data-level="3.2" data-path="浸水範囲の算出.html"><a href="浸水範囲の算出.html#浸水した地域の面積を算出"><i class="fa fa-check"></i><b>3.2</b> 浸水した地域の面積を算出</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="被害評価.html"><a href="被害評価.html"><i class="fa fa-check"></i><b>4</b> 被害評価　　</a><ul>
 <li class="chapter" data-level="4.1" data-path="被害評価.html"><a href="被害評価.html#estimated-number-of-exposed-people"><i class="fa fa-check"></i><b>4.1</b> “Estimated number of exposed people”</a><ul>
@@ -94,8 +94,7 @@
 <li class="chapter" data-level="4.3" data-path="被害評価.html"><a href="被害評価.html#estimated-affected-urban-area"><i class="fa fa-check"></i><b>4.3</b> “Estimated affected urban area”</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="プロダクトの出力.html"><a href="プロダクトの出力.html"><i class="fa fa-check"></i><b>5</b> プロダクトの出力</a><ul>
-<li class="chapter" data-level="5.1" data-path="プロダクトの出力.html"><a href="プロダクトの出力.html#レイヤーをmap上に表示する"><i class="fa fa-check"></i><b>5.1</b> レイヤーをMap上に表示する　　</a></li>
-<li class="chapter" data-level="5.2" data-path="プロダクトの出力.html"><a href="プロダクトの出力.html#tiff形式でgoogleドライブに出力する"><i class="fa fa-check"></i><b>5.2</b> TIFF形式で、Googleドライブに出力する</a></li>
+<li class="chapter" data-level="5.1" data-path="プロダクトの出力.html"><a href="プロダクトの出力.html#tiff形式でgoogleドライブに出力する"><i class="fa fa-check"></i><b>5.1</b> TIFF形式で、Googleドライブに出力する</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="結果の表示.html"><a href="結果の表示.html"><i class="fa fa-check"></i><b>6</b> 結果の表示</a><ul>
 <li class="chapter" data-level="6.1" data-path="結果の表示.html"><a href="結果の表示.html#地図上に結果を表示する①"><i class="fa fa-check"></i><b>6.1</b> 地図上に結果を表示する①</a><ul>
@@ -134,12 +133,12 @@
 <div id="header">
 <h1 class="title">GEE学習サイト</h1>
 <p class="author"><em>Tamaki.M</em></p>
-<p class="date"><em>2021-01-07</em></p>
+<p class="date"><em>2021-01-28</em></p>
 </div>
 <div id="初めに" class="section level1 unnumbered">
 <h1>初めに</h1>
-<p>このサイトは、Google earth engineを活用して洪水被害図を作成する方法について詳細に紹介します。衛星データから自分が必要とするデータを作成したい、Google earth engine初心者の方を想定し、このサイトを読めば　　</p>
-<p>UN Spiderが提供しているコードにのっとって説明をしています。元のサイトは、以下のURLからら確認できます。
+<p>このサイトは、Google earth engineを活用して洪水による浸水被害範囲図を作成する方法について、UN Spiderが提供しているコードにのっとって説明をしています。ただし、本記事では説明のため、UN spiderのコードとは順番を入れ替えている部分があります。</p>
+<p>元のサイトは、以下のURLから確認できます。
 (<a href="https://un-spider.org/advisory-support/recommended-practices/recommended-practice-google-earth-engine-flood-mapping/step-by-step" class="uri">https://un-spider.org/advisory-support/recommended-practices/recommended-practice-google-earth-engine-flood-mapping/step-by-step</a>)</p>
 <p>コードを詳しく知る前に、まずはどのようなものが出来上がるのか確認したいという方は、以下のサイトに従って作成してみてください。
 (<a href="https://tamak1313.github.io/cosmobook/" class="uri">https://tamak1313.github.io/cosmobook/</a>)</p>
@@ -152,8 +151,8 @@
 </div>
 <div id="作業環境" class="section level2">
 <h2><span class="header-section-number">0.2</span> 作業環境</h2>
-<p>2020年12月現在
-Windows 10 64bit</p>
+<p>2020年12月現在</p>
+<p>Windows 10 64bit</p>
 
 </div>
 </div>
