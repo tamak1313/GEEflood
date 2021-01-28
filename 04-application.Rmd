@@ -39,7 +39,6 @@ var GHSLprojection = population_count.projection();
 
 // GHSLスケールに洪水レイヤーをリプロジェクトする
 リプロジェクト:座標系の変換操作
-
 var flooded_res1 = flooded
     .reproject({
     crs: GHSLprojection
@@ -88,7 +87,8 @@ var LC = ee.ImageCollection('MODIS/006/MCD12Q1')
   .clip(aoi);　　　　　　　　           　//画像をジオメトリにクリップする
 ```
 
-MODIS Land Coverをマップ上に表示してみましょう。
+MODIS Land Coverをマップ上に表示してみましょう。  
+
 植生指数の値が小さければ小さいほど、植生がない/少ない(水や雪など)を表し、大きくなればなるほど豊かな植生(森林など)ということを示しています。以下の図の通り、豊かな植生を濃緑、植生がない/少ない地域を青で塗分けています。
 
 ```
@@ -130,7 +130,7 @@ Map.addLayer(cropland, croplandVis, 'Cropland',0)
 
 先ほど同様に、今度はAffected croplandを抽出してみましょう。
 ```
-// MODISを投影させる
+// MODISを投影
 var MODISprojection = LC.projection();
 
 // MODISスケールにflood layerをリプロジェクトする

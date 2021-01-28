@@ -24,7 +24,7 @@
 <meta name="author" content="Tamaki.M" />
 
 
-<meta name="date" content="2021-01-28" />
+<meta name="date" content="2021-01-29" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -157,7 +157,6 @@ var GHSLprojection = population_count.projection();
 
 // GHSLスケールに洪水レイヤーをリプロジェクトする
 リプロジェクト:座標系の変換操作
-
 var flooded_res1 = flooded
     .reproject({
     crs: GHSLprojection
@@ -196,8 +195,8 @@ Map.addLayer(population_exposed, populationExposedVis, &#39;Exposed Population&#
   .select(&quot;LC_Type1&quot;)　　　　           　//Layersの指定
   .first()                                
   .clip(aoi);　　　　　　　　           　//画像をジオメトリにクリップする</code></pre>
-<p>MODIS Land Coverをマップ上に表示してみましょう。
-植生指数の値が小さければ小さいほど、植生がない/少ない(水や雪など)を表し、大きくなればなるほど豊かな植生(森林など)ということを示しています。以下の図の通り、豊かな植生を濃緑、植生がない/少ない地域を青で塗分けています。</p>
+<p>MODIS Land Coverをマップ上に表示してみましょう。</p>
+<p>植生指数の値が小さければ小さいほど、植生がない/少ない(水や雪など)を表し、大きくなればなるほど豊かな植生(森林など)ということを示しています。以下の図の通り、豊かな植生を濃緑、植生がない/少ない地域を青で塗分けています。</p>
 <pre><code>var LCVis = {
   min: 1.0,
   max: 17.0,
@@ -230,7 +229,7 @@ Map.addLayer(cropland, croplandVis, &#39;Cropland&#39;,0) </code></pre>
 <p class="caption">cropland</p>
 </div>
 <p>先ほど同様に、今度はAffected croplandを抽出してみましょう。</p>
-<pre><code>// MODISを投影させる
+<pre><code>// MODISを投影
 var MODISprojection = LC.projection();
 
 // MODISスケールにflood layerをリプロジェクトする

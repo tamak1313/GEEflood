@@ -73,7 +73,7 @@
 
 \title{GEE学習サイト}
 \author{Tamaki.M}
-\date{2021-01-28}
+\date{2021-01-29}
 
 \begin{document}
 \maketitle
@@ -89,9 +89,10 @@
 このサイトは、Google earth engineを活用して洪水による浸水被害範囲図を作成する方法について、UN Spiderが提供しているコードにのっとって説明をしています。ただし、本記事では説明のため、UN spiderのコードとは順番を入れ替えている部分があります。
 
 元のサイトは、以下のURLから確認できます。
+
 (\url{https://un-spider.org/advisory-support/recommended-practices/recommended-practice-google-earth-engine-flood-mapping/step-by-step})
 
-コードを詳しく知る前に、まずはどのようなものが出来上がるのか確認したいという方は、以下のサイトに従って作成してみてください。
+コードを詳しく知る前に、まずはどのようなものが出来上がるのか確認したいという方は、以下のサイトに従って作成してみてください。\\
 (\url{https://tamak1313.github.io/cosmobook/})
 
 \hypertarget{ux5bfeux8c61ux8005}{%
@@ -146,9 +147,9 @@ Windows 10 64bit
 \section{対象期間}\label{ux5bfeux8c61ux671fux9593}}
 
 洪水前後の日時(期間)を設定しましょう。\\
-＊entinel-11の周期のため、長期間を設定すると、画像のロード等に時間がかかる場合があります。
+＊sentinel-11の周期のため、長期間を設定すると、画像のロード等に時間がかかる場合があります。
 
-本サイトでは、洪水の発生する前を3月、洪水が発生した時期を9月としています。
+本サイトでは、洪水の発生する前を3月、洪水が発生後の時期を9月としています。
 
 \begin{verbatim}
 //洪水の発生前の時期を設定する
@@ -163,7 +164,7 @@ var after_end='2017-09-30';
 \hypertarget{ux5404ux7a2eux8a2dux5b9a}{%
 \section{各種設定　　}\label{ux5404ux7a2eux8a2dux5b9a}}
 
-各種設定については、変更せずに使います。。詳細な説明は省略しますが、対象地域等により、必要がある場合のみ変更して利用してみてください。
+各種設定については、変更せずに使います。詳細な説明は省略しますが、対象地域等により、必要がある場合のみ変更して利用してみてください。
 
 SARセンサは縦方向の電磁波を送信します。縦波を単一平面(偏波)で送信することが可能です。洪水マッピングでは、ほとんどの場合VHが好まれます。\\
 VH:垂直送信、水平受信、VV:垂直送信、垂直受信
@@ -365,7 +366,8 @@ Map.addLayer(difference,{min:0,max:2},"Difference Layer",0);
       var flooded = flooded.updateMask(slope.lt(5));
 \end{verbatim}
 
-以上の操作で生成されたFlooded areaをマップ上に表示してみましょう。\\
+以上の操作で生成されたFlooded areaをマップ上に表示してみましょう。
+
 青い部分が洪水による浸水被害があった地域です。今回は洪水開始前を3月、洪水終了後を9月に設定しているため、浸水地域は実際の被害範囲より狭いですが、洪水終了時期を7月や8月に設定すると、さらに広い浸水範囲を検出することができます。
 
 \begin{verbatim}
@@ -452,7 +454,6 @@ var GHSLprojection = population_count.projection();
 
 // GHSLスケールに洪水レイヤーをリプロジェクトする
 リプロジェクト:座標系の変換操作
-
 var flooded_res1 = flooded
     .reproject({
     crs: GHSLprojection
@@ -509,6 +510,7 @@ var LC = ee.ImageCollection('MODIS/006/MCD12Q1')
 \end{verbatim}
 
 MODIS Land Coverをマップ上に表示してみましょう。
+
 植生指数の値が小さければ小さいほど、植生がない/少ない(水や雪など)を表し、大きくなればなるほど豊かな植生(森林など)ということを示しています。以下の図の通り、豊かな植生を濃緑、植生がない/少ない地域を青で塗分けています。
 
 \begin{verbatim}
@@ -560,7 +562,7 @@ Map.addLayer(cropland, croplandVis, 'Cropland',0)
 先ほど同様に、今度はAffected croplandを抽出してみましょう。
 
 \begin{verbatim}
-// MODISを投影させる
+// MODISを投影
 var MODISprojection = LC.projection();
 
 // MODISスケールにflood layerをリプロジェクトする

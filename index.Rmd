@@ -14,10 +14,11 @@ description: "GEEを活用して洪水被害図を作成してみましょう"
 
 このサイトは、Google earth engineを活用して洪水による浸水被害範囲図を作成する方法について、UN Spiderが提供しているコードにのっとって説明をしています。ただし、本記事では説明のため、UN spiderのコードとは順番を入れ替えている部分があります。  
 
-元のサイトは、以下のURLから確認できます。
+元のサイトは、以下のURLから確認できます。  
+
 (https://un-spider.org/advisory-support/recommended-practices/recommended-practice-google-earth-engine-flood-mapping/step-by-step)
 
-コードを詳しく知る前に、まずはどのようなものが出来上がるのか確認したいという方は、以下のサイトに従って作成してみてください。
+コードを詳しく知る前に、まずはどのようなものが出来上がるのか確認したいという方は、以下のサイトに従って作成してみてください。  
 (https://tamak1313.github.io/cosmobook/)
 
 ## 対象者

@@ -18,6 +18,7 @@ Google earth engineの画面は、大きく分けて以下の3パートに分か
 <b>Map</b>：<b>Code Editor</b>に入力したコードの結果等がGoogle Map上に表示される
 
 
+
 <b>Code editor</b>に実行したいコードを入力し、【RUN】すると、<b>Console</b>に結果が出力され、<b>Map</b>上に表示されます。結果を保存したい場合には、<b>Console</b>から保存作業を行うと、自身のGoogle Drive上に結果が保存されるようになっています。  
 
 

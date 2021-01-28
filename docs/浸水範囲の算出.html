@@ -24,7 +24,7 @@
 <meta name="author" content="Tamaki.M" />
 
 
-<meta name="date" content="2021-01-28" />
+<meta name="date" content="2021-01-29" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -170,8 +170,8 @@ var difference_binary = difference.gt(threshold); </code></pre>
       var terrain = ee.Algorithms.Terrain(DEM);
       var slope = terrain.select(&#39;slope&#39;);
       var flooded = flooded.updateMask(slope.lt(5));</code></pre>
-<p>以上の操作で生成されたFlooded areaをマップ上に表示してみましょう。<br />
-青い部分が洪水による浸水被害があった地域です。今回は洪水開始前を3月、洪水終了後を9月に設定しているため、浸水地域は実際の被害範囲より狭いですが、洪水終了時期を7月や8月に設定すると、さらに広い浸水範囲を検出することができます。</p>
+<p>以上の操作で生成されたFlooded areaをマップ上に表示してみましょう。</p>
+<p>青い部分が洪水による浸水被害があった地域です。今回は洪水開始前を3月、洪水終了後を9月に設定しているため、浸水地域は実際の被害範囲より狭いですが、洪水終了時期を7月や8月に設定すると、さらに広い浸水範囲を検出することができます。</p>
 <pre><code>Map.addLayer(flooded,{palette:&quot;0000FF&quot;},&#39;Flooded areas&#39;);</code></pre>
 <div class="figure">
 <img src="images/flooded.png" alt="" />
